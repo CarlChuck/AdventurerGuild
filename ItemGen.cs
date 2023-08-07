@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Roster : MonoBehaviour
+public class ItemGen : MonoBehaviour
 {
     #region Singleton
-    public static Roster Instance;
+    public static ItemGen Instance;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -18,8 +18,5 @@ public class Roster : MonoBehaviour
         }
     }
     #endregion
-
-    [SerializeField] List<Adventurer> adventurers;
-
 
 }

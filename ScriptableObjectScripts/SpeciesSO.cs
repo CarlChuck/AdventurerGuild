@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Species", menuName = "ScriptableObject/Species")]
-public class Species : ScriptableObject
+public class SpeciesSO : ScriptableObject
 {
     public SpeciesFamily specFamily;
     public int combat;

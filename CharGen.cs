@@ -19,8 +19,8 @@ public class CharGen : MonoBehaviour
     }
     #endregion
 
-    public List<Profession> professions;
-    public List<Species> species;
+    public List<ProfessionSO> professions;
+    public List<SpeciesSO> species;
 
     [SerializeField] private GameObject adventurerPrefab;
 
@@ -31,16 +31,16 @@ public class CharGen : MonoBehaviour
         newAdventurer.GenerateStartingCharacter(GetRandomSpecies(), GetRandomProfession());
     }
 
-    private Profession GetRandomProfession()
+    private ProfessionSO GetRandomProfession()
     {
         int rand = Random.Range(0, professions.Count);
-        Profession profToReturn = professions[rand];
+        ProfessionSO profToReturn = professions[rand];
         return profToReturn;
     }
-    private Species GetRandomSpecies()
+    private SpeciesSO GetRandomSpecies()
     {
         int rand = Random.Range(0, species.Count);
-        Species specToReturn = species[rand];
+        SpeciesSO specToReturn = species[rand];
         return specToReturn;
     }
 }

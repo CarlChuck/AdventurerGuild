@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Profession", menuName = "ScriptableObject/Profession")]
-public class Profession : ScriptableObject
+public class ProfessionSO : ScriptableObject
 {
     public IfCrafter ifCrafter;
     public int combat;
@@ -14,4 +14,3 @@ public class Profession : ScriptableObject
     public int magic;
     public int craft;
 }
-public enum IfCrafter { NA, Weaponsmith, Armoursmith, Leatherworker, Tailor, Fletcher, Jeweller, Carpenter}
