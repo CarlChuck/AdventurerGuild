@@ -13,4 +13,5 @@ public class ItemSO : ScriptableObject
     public int hunting;
     public int magic;
     public int craft;
+    public int value;
 }

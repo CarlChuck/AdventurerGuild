@@ -9,6 +9,7 @@ public class Adventurer : MonoBehaviour
     [SerializeField] private ProfessionSO profession;
     [SerializeField] private int experience;
     [SerializeField] private int level;
+    [SerializeField] private int charValue;
     [SerializeField] private Stat combat;
     [SerializeField] private Stat healing;
     [SerializeField] private Stat social;
@@ -20,15 +21,36 @@ public class Adventurer : MonoBehaviour
     [SerializeField] private Item weaponSlot;
     [SerializeField] private Item outfitSlot;
     [SerializeField] private Item accessorySlot;
+    private bool genderM;
 
     #region Core Generation
     public void GenerateStartingCharacter(SpeciesSO spec, ProfessionSO prof)
     {
+        InitialiseStats();
         species = spec;
         profession = prof;
         GenerateStats();
         experience = 0;
         AddLevel();
+        SetGender();
+    }
+    private void InitialiseStats()
+    {
+        combat = Instantiate(Guild.Instance.statPrefab, transform);
+        healing = Instantiate(Guild.Instance.statPrefab, transform);
+        social = Instantiate(Guild.Instance.statPrefab, transform);
+        subterfuge = Instantiate(Guild.Instance.statPrefab, transform);
+        hunting = Instantiate(Guild.Instance.statPrefab, transform);
+        magic = Instantiate(Guild.Instance.statPrefab, transform);
+        craft = Instantiate(Guild.Instance.statPrefab, transform);
+
+        combat.InitialiseStat("Combat");
+        healing.InitialiseStat("Healing");
+        social.InitialiseStat("Social");
+        subterfuge.InitialiseStat("Subterfuge");
+        hunting.InitialiseStat("Hunting");
+        magic.InitialiseStat("Magic");
+        craft.InitialiseStat("Craft");
     }
     private void GenerateStats()
     {
@@ -61,6 +83,18 @@ public class Adventurer : MonoBehaviour
             _ => 0,
         };
         stat.AddValue(statAmountToAdd);
+    }
+    private void SetGender()
+    {
+        int rand = Random.Range(1, 3);
+        if (rand > 1)
+        {
+            genderM = true;
+        }
+        else
+        {
+            genderM = false;
+        }
     }
     #endregion
 
@@ -117,6 +151,12 @@ public class Adventurer : MonoBehaviour
             AddProfessionStat(craft, profession.craft);
             level++;
         }
+        UpdateCharacterValue();
+    }
+    private void UpdateCharacterValue()
+    {
+        int statTotal = combat.GetValue() + healing.GetValue() + social.GetValue() + subterfuge.GetValue() + hunting.GetValue() + magic.GetValue() + craft.GetValue();
+        charValue = 200 + (statTotal * 20);
     }
     #endregion
 
@@ -184,6 +224,74 @@ public class Adventurer : MonoBehaviour
     public Item GetAccessorySlot()
     {
         return accessorySlot;
+    }
+    public int GetCharacterValue()
+    {
+        return charValue;
+    }
+    #endregion
+
+    #region Equipment
+    public void EquipWeapon(Item item)
+    {
+        if (item.GetItemType() == ItemType.Weapon)
+        {
+            if (weaponSlot != null)
+            {
+                UnEquipWeapon();
+            }
+            Guild.Instance.RemoveItemFromInventory(item);
+            weaponSlot = item;
+        }
+
+    }
+    public void EquipOutfit(Item item)
+    {
+        if (item.GetItemType() == ItemType.Outfit)
+        {
+            if (outfitSlot != null)
+            {
+                UnEquipOutfit();
+            }
+            Guild.Instance.RemoveItemFromInventory(item);
+            outfitSlot = item;
+        }
+    }
+    public void EquipAccessory(Item item)
+    {
+        if (item.GetItemType() == ItemType.Accessory)
+        {
+            if (accessorySlot != null)
+            {
+                UnEquipAccessory();
+            }
+            Guild.Instance.RemoveItemFromInventory(item);
+            accessorySlot = item;
+        }
+    }
+    public void UnEquipWeapon()
+    {
+        if (weaponSlot != null)
+        {
+            Guild.Instance.AddItemToInventory(weaponSlot);
+            weaponSlot = null;
+        }
+    }
+    public void UnEquipOutfit()
+    {
+        if (outfitSlot != null)
+        {
+            Guild.Instance.AddItemToInventory(outfitSlot);
+            outfitSlot = null;
+        }
+    }
+    public void UnEquipAccessory()
+    {
+        if (accessorySlot != null)
+        {
+            Guild.Instance.AddItemToInventory(accessorySlot);
+            accessorySlot = null;
+        }
     }
     #endregion
 }

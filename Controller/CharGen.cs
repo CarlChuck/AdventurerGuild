@@ -20,21 +20,36 @@ public class CharGen : MonoBehaviour
     #endregion
 
     public List<ProfessionSO> professions;
+    public List<ProfessionSO> starterProfessions;
     public List<SpeciesSO> species;
 
     [SerializeField] private GameObject adventurerPrefab;
 
-    public void GenerateCharacter()
+    public Adventurer GenerateRandomCharacter()
     {
         GameObject newPrefab = Instantiate(adventurerPrefab);
         Adventurer newAdventurer = newPrefab.GetComponent<Adventurer>();
         newAdventurer.GenerateStartingCharacter(GetRandomSpecies(), GetRandomProfession());
+        return newAdventurer;
+    }
+    public Adventurer GenerateStarterCharacter()
+    {
+        GameObject newPrefab = Instantiate(adventurerPrefab);
+        Adventurer newAdventurer = newPrefab.GetComponent<Adventurer>();
+        newAdventurer.GenerateStartingCharacter(GetRandomSpecies(), GetRandomStarterProfession());
+        return newAdventurer;
     }
 
     private ProfessionSO GetRandomProfession()
     {
         int rand = Random.Range(0, professions.Count);
         ProfessionSO profToReturn = professions[rand];
+        return profToReturn;
+    }
+    private ProfessionSO GetRandomStarterProfession()
+    {
+        int rand = Random.Range(0, starterProfessions.Count);
+        ProfessionSO profToReturn = starterProfessions[rand];
         return profToReturn;
     }
     private SpeciesSO GetRandomSpecies()
