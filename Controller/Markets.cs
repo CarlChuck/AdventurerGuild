@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class Markets : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] List<Adventurer> marketRecruits;
+    [SerializeField] List<Item> marketItems;
 
-    // Update is called once per frame
-    void Update()
+    public void GenerateAdventurerList()
     {
-        
+
+    }
+    public void GenerateItemList()
+    {
+
+    }
+    public List<Adventurer> GetAdventurerList()
+    {
+        return marketRecruits;
+    }
+    public List<Item> GetItemList()
+    {
+        return marketItems;
     }
 }

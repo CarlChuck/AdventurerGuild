@@ -118,7 +118,6 @@ public class Adventurer : MonoBehaviour
         }
     }
     #endregion
-
     #region XP and Level
     //Includes adding a level if necessary
     public void AddExperience(int xpValue)
@@ -180,7 +179,6 @@ public class Adventurer : MonoBehaviour
         charValue = 200 + (statTotal * 20);
     }
     #endregion
-
     #region Getters
     public string GetName()
     {
@@ -341,8 +339,11 @@ public class Adventurer : MonoBehaviour
     {
         return charValue;
     }
+    public bool GetIfMale()
+    {
+        return genderM;
+    }
     #endregion
-
     #region Equipment
     public void EquipWeapon(Item item)
     {
