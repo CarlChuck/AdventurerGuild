@@ -17,6 +17,7 @@ public class Adventurer : MonoBehaviour
     [SerializeField] private Stat hunting;
     [SerializeField] private Stat magic;
     [SerializeField] private Stat craft;
+    [SerializeField] private IfCrafter craftType;
 
     [SerializeField] private Item weaponSlot;
     [SerializeField] private Item outfitSlot;
@@ -33,6 +34,7 @@ public class Adventurer : MonoBehaviour
         experience = 0;
         AddLevel();
         SetGender();
+        SetCraft();
     }
     private void InitialiseStats()
     {
@@ -94,6 +96,25 @@ public class Adventurer : MonoBehaviour
         else
         {
             genderM = false;
+        }
+    }
+    private void SetCraft()
+    {
+        craftType = profession.ifCrafter;
+        if (craftType == IfCrafter.NA)
+        {
+            int rand = Random.Range(1, 8);
+            craftType = rand switch
+            {
+                1 => IfCrafter.Weaponsmith,
+                2 => IfCrafter.Armoursmith,
+                3 => IfCrafter.Leatherworker,
+                4 => IfCrafter.Tailor,
+                5 => IfCrafter.Fletcher,
+                6 => IfCrafter.Jeweller,
+                7 => IfCrafter.Carpenter,
+                _ => IfCrafter.Carpenter
+            };
         }
     }
     #endregion
@@ -183,31 +204,122 @@ public class Adventurer : MonoBehaviour
     }
     public int GetCombat()
     {
-        return combat.GetValue();
+        int combatValue = combat.GetValue();
+        if (weaponSlot != null)
+        {
+            combatValue += weaponSlot.GetCombat();
+        }
+        if (outfitSlot != null)
+        {
+            combatValue += outfitSlot.GetCombat();
+        }
+        if (accessorySlot != null)
+        {
+            combatValue += accessorySlot.GetCombat();
+        }
+        return combatValue;
     }
     public int GetHealing()
     {
-        return healing.GetValue();
+        int healValue = healing.GetValue();
+        if (weaponSlot != null)
+        {
+            healValue += weaponSlot.GetHealing();
+        }
+        if (outfitSlot != null)
+        {
+            healValue += outfitSlot.GetHealing();
+        }
+        if (accessorySlot != null)
+        {
+            healValue += accessorySlot.GetHealing();
+        }
+        return healValue;
     }
     public int GetSocial()
     {
-        return social.GetValue();
+        int socValue = social.GetValue();
+        if (weaponSlot != null)
+        {
+            socValue += weaponSlot.GetSocial();
+        }
+        if (outfitSlot != null)
+        {
+            socValue += outfitSlot.GetSocial();
+        }
+        if (accessorySlot != null)
+        {
+            socValue += accessorySlot.GetSocial();
+        }
+        return socValue;
     }
     public int GetSubterfuge()
     {
-        return subterfuge.GetValue();
+        int subtValue = subterfuge.GetValue();
+        if (weaponSlot != null)
+        {
+            subtValue += weaponSlot.GetSubterfuge();
+        }
+        if (outfitSlot != null)
+        {
+            subtValue += outfitSlot.GetSubterfuge();
+        }
+        if (accessorySlot != null)
+        {
+            subtValue += accessorySlot.GetSubterfuge();
+        }
+        return subtValue;
     }
     public int GetHunting()
     {
-        return hunting.GetValue();
+        int huntValue = hunting.GetValue();
+        if (weaponSlot != null)
+        {
+            huntValue += weaponSlot.GetHunting();
+        }
+        if (outfitSlot != null)
+        {
+            huntValue += outfitSlot.GetHunting();
+        }
+        if (accessorySlot != null)
+        {
+            huntValue += accessorySlot.GetHunting();
+        }
+        return huntValue;
     }
     public int GetMagic()
     {
-        return magic.GetValue();
+        int magicValue = magic.GetValue();
+        if (weaponSlot != null)
+        {
+            magicValue += weaponSlot.GetMagic();
+        }
+        if (outfitSlot != null)
+        {
+            magicValue += outfitSlot.GetMagic();
+        }
+        if (accessorySlot != null)
+        {
+            magicValue += accessorySlot.GetMagic();
+        }
+        return magicValue;
     }
     public int GetCraft()
     {
-        return craft.GetValue();
+        int craftValue = craft.GetValue(); 
+        if (weaponSlot != null)
+        {
+            craftValue += weaponSlot.GetCraft();
+        }
+        if (outfitSlot != null)
+        {
+            craftValue += outfitSlot.GetCraft();
+        }
+        if (accessorySlot != null)
+        {
+            craftValue += accessorySlot.GetCraft();
+        }
+        return craftValue;
     }
     public IfCrafter GetCraftType()
     {

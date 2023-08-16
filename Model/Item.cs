@@ -87,6 +87,35 @@ public class Item : MonoBehaviour
         craf = craft.GetValue();
     }
 
+    public int GetCombat()
+    {
+        return combat.GetValue();
+    }
+    public int GetHealing()
+    {
+        return healing.GetValue();
+    }
+    public int GetSocial()
+    {
+        return social.GetValue();
+    }
+    public int GetSubterfuge()
+    {
+        return subterfuge.GetValue();
+    }
+    public int GetHunting()
+    {
+        return hunting.GetValue();
+    }
+    public int GetMagic()
+    {
+        return magic.GetValue();
+    }
+    public int GetCraft()
+    {
+        return craft.GetValue();
+    }
+
     public string GetItemName()
     {
         return itemName;

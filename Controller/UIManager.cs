@@ -118,35 +118,69 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject rosterPane;
     [SerializeField] private GameObject adventurerPane;
     [SerializeField] private Adventurer selectedAdventurer;
+    [SerializeField] private UIFullCharacter uiForSelectedAdventurer;
+    [SerializeField] private GameObject unequipItemButtonPrefab;
+    [SerializeField] private GameObject unequipItemButtonInstance;
 
     public void OnButtonRoster()
     {
         PopulateRoster(Guild.Instance.GetAdventurers());
+        rosterPane.SetActive(true);
+        adventurerPane.SetActive(false);
+        itemsPane.SetActive(false);
     }
     public void OnButtonAdventurer(Adventurer adventurer)
     {
         adventurerPane.SetActive(true);
         rosterPane.SetActive(false);
         selectedAdventurer = adventurer;
+        uiForSelectedAdventurer.SetStats(adventurer);
     }
     public void OnButtonAdventurerBack()
     {
-        adventurerPane.SetActive(false);
+        OnButtonRoster();
         rosterPane.SetActive(true);
-        itemsPane.SetActive(false);
     }
     public void OnButtonInventorySlot(int iType) //0 - Weapon || 1 - Outfit || 2 - Accessory
     {
         List<Item> listOfInventoryToDisplay;
-        listOfInventoryToDisplay = iType switch
+        switch (iType)
         {
-            0 => Guild.Instance.GetWeapons(),
-            1 => Guild.Instance.GetOutfits(),
-            2 => Guild.Instance.GetAccessories(),
-            _ => Guild.Instance.GetWeapons()
-        };
-        PopulateItemList(listOfInventoryToDisplay);
+            case 0:
+                listOfInventoryToDisplay = Guild.Instance.GetWeapons();
+                PopulateItemList(listOfInventoryToDisplay, ItemType.Weapon);
+                break;
+            case 1:
+                listOfInventoryToDisplay = Guild.Instance.GetOutfits();
+                PopulateItemList(listOfInventoryToDisplay, ItemType.Outfit);
+                break;
+            case 2:
+                listOfInventoryToDisplay = Guild.Instance.GetAccessories();
+                PopulateItemList(listOfInventoryToDisplay, ItemType.Accessory);
+                break;
+            default:
+                listOfInventoryToDisplay = Guild.Instance.GetWeapons();
+                PopulateItemList(listOfInventoryToDisplay, ItemType.Weapon);
+                break;
+        }
         itemsPane.SetActive(true);
+    }
+    public void OnButtonUnEquip(ItemType iType)
+    {
+        if (iType == ItemType.Weapon)
+        {
+            selectedAdventurer.UnEquipWeapon();
+        }
+        else if (iType == ItemType.Outfit)
+        {
+            selectedAdventurer.UnEquipOutfit();
+        }
+        else
+        {
+            selectedAdventurer.UnEquipAccessory();
+        }
+        itemsPane.SetActive(false);
+        uiForSelectedAdventurer.SetStats(selectedAdventurer);
     }
     public void OnButtonSelectItem(Item newItem)
     {
@@ -163,6 +197,7 @@ public class UIManager : MonoBehaviour
             selectedAdventurer.EquipAccessory(newItem);
         }
         itemsPane.SetActive(false);
+        uiForSelectedAdventurer.SetStats(selectedAdventurer);
     }
     private void ClearRoster()
     {
@@ -170,13 +205,16 @@ public class UIManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        rosterList.Clear();
     }
     private void ClearItems()
-    {
+    { 
         foreach (UIItemEntry child in itemList)
         {
             Destroy(child.gameObject);
         }
+        itemList.Clear();
+        Destroy(unequipItemButtonInstance);
     }
     private void PopulateRoster(List<Adventurer> adventurers)
     {
@@ -192,9 +230,12 @@ public class UIManager : MonoBehaviour
             rosterEntry.SetCharValue(adventurer.GetCharacterValue());
         }
     }
-    private void PopulateItemList(List<Item> listOfItemsIn)
+    private void PopulateItemList(List<Item> listOfItemsIn, ItemType iType)
     {
         ClearItems();
+        unequipItemButtonInstance = Instantiate(unequipItemButtonPrefab, itemContainer);
+        UIItemEntry unequipBut = unequipItemButtonInstance.GetComponent<UIItemEntry>();
+        unequipBut.SetItemType(iType);
         foreach (Item item in listOfItemsIn)
         {
             GameObject newItem = Instantiate(itemPrefab, itemContainer);
@@ -217,6 +258,8 @@ public class UIManager : MonoBehaviour
 
     #endregion
     #region Market
+    [SerializeField] private Transform marketContainer;
+    [SerializeField] private List<UIMarketItemEntry> marketList;
 
     #endregion
     #region Recruit
