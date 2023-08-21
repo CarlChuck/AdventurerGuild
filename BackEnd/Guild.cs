@@ -37,6 +37,11 @@ public class Guild : MonoBehaviour
         goldMil = 0;
         AddStartingAdventurers();
         AddStartingItems();
+        Markets.Instance.InitialiseMarket();
+    }
+    public void LoadSavedGuild()
+    {
+        //TODO
     }
 
     #region Setters
@@ -116,6 +121,7 @@ public class Guild : MonoBehaviour
     public void AddAdventurer(Adventurer adventurer)
     {
         adventurers.Add(adventurer);
+        adventurer.transform.SetParent(transform);
     }
     public void RemoveAdventurer(Adventurer adventurer)
     {
@@ -137,7 +143,7 @@ public class Guild : MonoBehaviour
         int startingCharacters = 10;
         for (int i = 0; i < startingCharacters; i++)
         {
-            Adventurer newAdventurer = CharGen.Instance.GenerateStarterCharacter();
+            Adventurer newAdventurer = CharGen.Instance.GenerateStarterCharacter(transform);
             adventurers.Add(newAdventurer);
         }
     }
@@ -146,6 +152,7 @@ public class Guild : MonoBehaviour
     public void AddItemToInventory(Item item)
     {
         items.Add(item);
+        item.transform.SetParent(transform);
     }
     public void RemoveItemFromInventory(Item item)
     {
@@ -156,7 +163,7 @@ public class Guild : MonoBehaviour
         int startingItems = 5;
         for (int i = 0; i < startingItems; i++)
         {
-            Item newItem = ItemGen.Instance.GenerateStarterItem();
+            Item newItem = ItemGen.Instance.GenerateStarterItem(transform);
             items.Add(newItem);
         }
     }
@@ -186,6 +193,7 @@ public class Guild : MonoBehaviour
             gold -= mil;
             goldMil += 1;
         }
+        UIManager.Instance.SetGoldAmount(GetGoldMil(),GetGold());
     }
     public void RemoveGold(int goldToTake)
     {
@@ -201,7 +209,7 @@ public class Guild : MonoBehaviour
             gold -= mil;
             goldMil += 1;
         }
+        UIManager.Instance.SetGoldAmount(GetGoldMil(), GetGold());
     }
     #endregion
-
 }

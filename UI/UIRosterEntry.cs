@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -18,17 +17,11 @@ public class UIRosterEntry : MonoBehaviour
     [SerializeField] private TextMeshProUGUI charValue;
     [SerializeField] private Adventurer adventurerReference;
 
-    public void SetCharName(string nameToSet)
-    {
-        charName.text = nameToSet;
-    }
-    public void SetProfession(string prof)
-    {
-        charProfession.text = prof;
-    }
     public void SetStats(Adventurer adventurer)
     {
         adventurerReference = adventurer;
+        charName.text = adventurer.GetName();
+        charProfession.text = adventurer.GetProfession();
         combat.text = adventurer.GetCombat().ToString();
         healing.text = adventurer.GetHealing().ToString();
         social.text = adventurer.GetSocial().ToString();
@@ -36,10 +29,7 @@ public class UIRosterEntry : MonoBehaviour
         hunting.text = adventurer.GetHunting().ToString();
         magic.text = adventurer.GetMagic().ToString();
         craft.text = adventurer.GetCraft().ToString();
-    }
-    public void SetCharValue(int value)
-    {
-        charValue.text = value.ToString();
+        charValue.text = adventurer.GetCharacterValue().ToString();
     }
     public void OnButtonPress()
     {

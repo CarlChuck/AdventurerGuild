@@ -25,16 +25,16 @@ public class CharGen : MonoBehaviour
 
     [SerializeField] private GameObject adventurerPrefab;
 
-    public Adventurer GenerateRandomCharacter()
+    public Adventurer GenerateRandomCharacter(Transform parent)
     {
-        GameObject newPrefab = Instantiate(adventurerPrefab);
+        GameObject newPrefab = Instantiate(adventurerPrefab, parent);
         Adventurer newAdventurer = newPrefab.GetComponent<Adventurer>();
         newAdventurer.GenerateStartingCharacter(GetRandomSpecies(), GetRandomProfession());
         return newAdventurer;
     }
-    public Adventurer GenerateStarterCharacter()
+    public Adventurer GenerateStarterCharacter(Transform parent)
     {
-        GameObject newPrefab = Instantiate(adventurerPrefab);
+        GameObject newPrefab = Instantiate(adventurerPrefab, parent);
         Adventurer newAdventurer = newPrefab.GetComponent<Adventurer>();
         newAdventurer.GenerateStartingCharacter(GetRandomSpecies(), GetRandomStarterProfession());
         return newAdventurer;

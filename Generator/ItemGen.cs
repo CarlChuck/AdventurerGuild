@@ -22,23 +22,23 @@ public class ItemGen : MonoBehaviour
     [SerializeField] private List<ItemSO> itemTemplates;
     [SerializeField] private List<ItemSO> starterItemList;
 
-    public Item GenerateRandomItem()
+    public Item GenerateRandomItem(Transform parent)
     {
-        GameObject newItemObject = Instantiate(itemPrefab);
+        GameObject newItemObject = Instantiate(itemPrefab, parent);
         Item newItem = newItemObject.GetComponent<Item>();
         newItem.SetItem(GetRandomItemType());
         return newItem;
     }
-    public Item GenerateStarterItem()
+    public Item GenerateStarterItem(Transform parent)
     {
-        GameObject newItemObject = Instantiate(itemPrefab);
+        GameObject newItemObject = Instantiate(itemPrefab, parent);
         Item newItem = newItemObject.GetComponent<Item>();
         newItem.SetItem(GetRandomStarterItemType());
         return newItem;
     }
-    public Item GenerateRandomLootItem()
+    public Item GenerateRandomLootItem(Transform parent)
     {
-        Item newItem = GenerateRandomItem();
+        Item newItem = GenerateRandomItem(parent);
         int rand = Random.Range(1, 1001);
         if (rand < 701)
         {

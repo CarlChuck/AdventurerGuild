@@ -33,6 +33,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject completedTab;
     [SerializeField] private GameObject marketTab;
     [SerializeField] private GameObject recruitTab;
+    [SerializeField] private GameObject rosterLight;
+    [SerializeField] private GameObject taskLight;
+    [SerializeField] private GameObject actionLight;
+    [SerializeField] private GameObject inProgressLight;
+    [SerializeField] private GameObject completedLight;
+    [SerializeField] private GameObject marketLight;
+    [SerializeField] private GameObject recruitLight;
 
     public void SetTabActive(int tabNum)
     {
@@ -41,27 +48,35 @@ public class UIManager : MonoBehaviour
         {
             case 1:
                 rosterTab.SetActive(true);
+                rosterLight.SetActive(true);
                 break;
             case 2:
                 taskTab.SetActive(true);
+                taskLight.SetActive(true);
                 break;
             case 3:
                 actionTab.SetActive(true);
+                actionLight.SetActive(true);
                 break;
             case 4:
                 inProgressTab.SetActive(true);
+                inProgressLight.SetActive(true);
                 break;
             case 5:
                 completedTab.SetActive(true);
+                completedLight.SetActive(true);
                 break;
             case 6:
                 marketTab.SetActive(true);
+                marketLight.SetActive(true);
                 break;
             case 7:
                 recruitTab.SetActive(true);
+                recruitLight.SetActive(true);
                 break;
             default:
                 rosterTab.SetActive(true);
+                rosterLight.SetActive(true);
                 break;
         }
     }
@@ -74,7 +89,16 @@ public class UIManager : MonoBehaviour
         completedTab.SetActive(false);
         marketTab.SetActive(false);
         recruitTab.SetActive(false);
+
+        rosterLight.SetActive(false);
+        taskLight.SetActive(false);
+        actionLight.SetActive(false);
+        inProgressLight.SetActive(false);
+        completedLight.SetActive(false);
+        marketLight.SetActive(false);
+        recruitLight.SetActive(false);
     }
+
     #endregion
 
     public void StartUI(string newName, int mil, int units)
@@ -224,15 +248,13 @@ public class UIManager : MonoBehaviour
             GameObject newCharacter = Instantiate(rosterPrefab, rosterContainer);
             UIRosterEntry rosterEntry = newCharacter.GetComponent<UIRosterEntry>();
             rosterList.Add(rosterEntry);
-            rosterEntry.SetCharName(adventurer.GetName());
-            rosterEntry.SetProfession(adventurer.GetProfession());
             rosterEntry.SetStats(adventurer);
-            rosterEntry.SetCharValue(adventurer.GetCharacterValue());
         }
     }
     private void PopulateItemList(List<Item> listOfItemsIn, ItemType iType)
     {
         ClearItems();
+
         unequipItemButtonInstance = Instantiate(unequipItemButtonPrefab, itemContainer);
         UIItemEntry unequipBut = unequipItemButtonInstance.GetComponent<UIItemEntry>();
         unequipBut.SetItemType(iType);
@@ -259,10 +281,75 @@ public class UIManager : MonoBehaviour
     #endregion
     #region Market
     [SerializeField] private Transform marketContainer;
+    [SerializeField] private GameObject marketItemPrefab;
     [SerializeField] private List<UIMarketItemEntry> marketList;
+
+    public void OnButtonMarket()
+    {
+        PopulateMarketList(Markets.Instance.GetItemList());
+    }
+    public void OnButtonBuyItem(Item item)
+    {
+        Markets.Instance.OnBuyItem(item);
+        OnButtonMarket();
+    }
+    public void PopulateMarketList(List<Item> listOfItemsIn)
+    {
+        ClearMarketList();
+        foreach (Item item in listOfItemsIn)
+        {
+            GameObject newItem = Instantiate(marketItemPrefab, marketContainer);
+            UIMarketItemEntry itemEntry = newItem.GetComponent<UIMarketItemEntry>();
+            marketList.Add(itemEntry);
+            itemEntry.SetItem(item);
+        }
+    }
+    public void ClearMarketList()
+    {
+        foreach (UIMarketItemEntry child in marketList)
+        {
+            Destroy(child.gameObject);
+        }
+        marketList.Clear();
+    }
 
     #endregion
     #region Recruit
+    [SerializeField] private Transform recruitContainer;
+    [SerializeField] private GameObject marketRecruitPrefab;
+    [SerializeField] private List<UIMarketRecruitEntry> recruitList;
 
+    public void OnButtonRecruit()
+    {
+        PopulateRecruitList(Markets.Instance.GetAdventurerList());
+    }
+    public void OnButtonBuyRecruit(Adventurer adventurer)
+    {
+        Markets.Instance.OnBuyAdventurer(adventurer);
+        OnButtonRecruit();
+    }
+    public void PopulateRecruitList(List<Adventurer> ListOfadventurersIn)
+    {
+        ClearRecruitList();
+        foreach (Adventurer adventurer in ListOfadventurersIn)
+        {
+            GameObject newRecruit = Instantiate(marketRecruitPrefab, recruitContainer);
+            UIMarketRecruitEntry rosterEntry = newRecruit.GetComponent<UIMarketRecruitEntry>();
+            recruitList.Add(rosterEntry);
+            rosterEntry.SetStats(adventurer);
+        }
+    }
+    public void ClearRecruitList()
+    {
+        foreach (UIMarketRecruitEntry child in recruitList)
+        {
+            Destroy(child.gameObject);
+        }
+        recruitList.Clear();
+    }
     #endregion
+    public void NotEnoughGold()
+    {
+        //TODO
+    }
 }
