@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Profession", menuName = "ScriptableObject/Mission")]
+[CreateAssetMenu(fileName = "New Mission", menuName = "ScriptableObject/Mission")]
 public class MissionSO : ScriptableObject
 {
     public IfCrafter ifCrafter;
@@ -13,4 +13,14 @@ public class MissionSO : ScriptableObject
     public int hunting;
     public int magic;
     public int craft;
+}
+public enum MissionType 
+{ 
+    Dungeon, Patrol, Defence, 
+    Healing, Cure, HerbGather, 
+    Diplomacy, Entertain, Networking, 
+    Stealth, Smuggling, Larceny, 
+    MonsterHunt, BountyHunt, Scouting,
+    Enchantment, SpiritQuest, Divination,
+    MiningExpedition, OreRefinement, WoodcuttingExpedition
 }
