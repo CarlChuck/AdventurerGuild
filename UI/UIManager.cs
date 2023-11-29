@@ -33,13 +33,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject completedTab;
     [SerializeField] private GameObject marketTab;
     [SerializeField] private GameObject recruitTab;
-    [SerializeField] private GameObject rosterLight;
-    [SerializeField] private GameObject taskLight;
-    [SerializeField] private GameObject actionLight;
-    [SerializeField] private GameObject inProgressLight;
-    [SerializeField] private GameObject completedLight;
-    [SerializeField] private GameObject marketLight;
-    [SerializeField] private GameObject recruitLight;
 
     public void SetTabActive(int tabNum)
     {
@@ -48,35 +41,27 @@ public class UIManager : MonoBehaviour
         {
             case 1:
                 rosterTab.SetActive(true);
-                rosterLight.SetActive(true);
                 break;
             case 2:
                 taskTab.SetActive(true);
-                taskLight.SetActive(true);
                 break;
             case 3:
                 actionTab.SetActive(true);
-                actionLight.SetActive(true);
                 break;
             case 4:
                 inProgressTab.SetActive(true);
-                inProgressLight.SetActive(true);
                 break;
             case 5:
                 completedTab.SetActive(true);
-                completedLight.SetActive(true);
                 break;
             case 6:
                 marketTab.SetActive(true);
-                marketLight.SetActive(true);
                 break;
             case 7:
                 recruitTab.SetActive(true);
-                recruitLight.SetActive(true);
                 break;
             default:
                 rosterTab.SetActive(true);
-                rosterLight.SetActive(true);
                 break;
         }
     }
@@ -89,14 +74,6 @@ public class UIManager : MonoBehaviour
         completedTab.SetActive(false);
         marketTab.SetActive(false);
         recruitTab.SetActive(false);
-
-        rosterLight.SetActive(false);
-        taskLight.SetActive(false);
-        actionLight.SetActive(false);
-        inProgressLight.SetActive(false);
-        completedLight.SetActive(false);
-        marketLight.SetActive(false);
-        recruitLight.SetActive(false);
     }
 
     #endregion

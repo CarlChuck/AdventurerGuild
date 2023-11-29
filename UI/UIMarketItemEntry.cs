@@ -55,7 +55,7 @@ public class UIMarketItemEntry : MonoBehaviour
     }
     private void SetItemColour()
     {
-        ItemQuality iQuality = itemReference.GetItemQuality();
+        Quality iQuality = itemReference.GetItemQuality();
         //TODO ColourStuff
     }
 }

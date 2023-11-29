@@ -16,6 +16,8 @@ public class Guild : MonoBehaviour
         {
             Instance = this;
         }
+        items = new();
+        adventurers = new();
     }
     #endregion
     private string guildName;
@@ -30,8 +32,6 @@ public class Guild : MonoBehaviour
     {
         ClearAdventurers();
         ClearItems();
-        items = new();
-        adventurers = new();
         guildName = gName;
         gold = 10000;
         goldMil = 0;
@@ -115,6 +115,19 @@ public class Guild : MonoBehaviour
     public List<Adventurer> GetAdventurers()
     {
         return adventurers;
+    }
+    public int GetHighestLevelAdventurer()
+    {
+        int levelToReturn = 1;
+        foreach (Adventurer adv in adventurers)
+        {
+            int advLevel = adv.GetLevel();
+            if (advLevel > levelToReturn)
+            {
+                levelToReturn = advLevel;
+            }
+        }
+        return levelToReturn;
     }
     #endregion
     #region Adventurers

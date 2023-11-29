@@ -35,6 +35,7 @@ public class Adventurer : MonoBehaviour
         AddLevel();
         SetGender();
         SetCraft();
+        SetAdventurerName();
     }
     private void InitialiseStats()
     {
@@ -116,6 +117,10 @@ public class Adventurer : MonoBehaviour
                 _ => IfCrafter.Carpenter
             };
         }
+    }
+    private void SetAdventurerName()
+    {
+        adventurerName = "thisAdventurer"; //TODO
     }
     #endregion
     #region XP and Level

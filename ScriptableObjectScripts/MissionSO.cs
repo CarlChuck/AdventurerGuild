@@ -6,6 +6,7 @@ using UnityEngine;
 public class MissionSO : ScriptableObject
 {
     public IfCrafter ifCrafter;
+    public MissionType mType;
     public int combat;
     public int healing;
     public int social;
@@ -13,14 +14,5 @@ public class MissionSO : ScriptableObject
     public int hunting;
     public int magic;
     public int craft;
-}
-public enum MissionType 
-{ 
-    Dungeon, Patrol, Defence, 
-    Healing, Cure, HerbGather, 
-    Diplomacy, Entertain, Networking, 
-    Stealth, Smuggling, Larceny, 
-    MonsterHunt, BountyHunt, Scouting,
-    Enchantment, SpiritQuest, Divination,
-    MiningExpedition, OreRefinement, WoodcuttingExpedition
+    public int missionTime;
 }

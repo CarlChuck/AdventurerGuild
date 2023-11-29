@@ -42,23 +42,23 @@ public class ItemGen : MonoBehaviour
         int rand = Random.Range(1, 1001);
         if (rand < 701)
         {
-            newItem.SetItemQuality(ItemQuality.Common);
+            newItem.SetItemQuality(Quality.Common);
         }
         else if (rand < 901)
         {
-            newItem.SetItemQuality(ItemQuality.Uncommon);
+            newItem.SetItemQuality(Quality.Uncommon);
         }
         else if (rand < 976)
         {
-            newItem.SetItemQuality(ItemQuality.Masterwork);
+            newItem.SetItemQuality(Quality.Masterwork);
         }
         else if (rand < 996)
         {
-            newItem.SetItemQuality(ItemQuality.Rare);
+            newItem.SetItemQuality(Quality.Rare);
         }
         else
         {
-            newItem.SetItemQuality(ItemQuality.Legendary);
+            newItem.SetItemQuality(Quality.Legendary);
         }
         return newItem;
     }

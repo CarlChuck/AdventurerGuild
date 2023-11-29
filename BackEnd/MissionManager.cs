@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MissionGen : MonoBehaviour
+public class MissionManager : MonoBehaviour
 {
     #region Singleton
-    public static MissionGen Instance;
+    public static MissionManager Instance;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -16,16 +16,11 @@ public class MissionGen : MonoBehaviour
         {
             Instance = this;
         }
-        missionTemplates = new();
+        missionList = new();
     }
     #endregion
-    [SerializeField] private GameObject missionPrefab;
-    [SerializeField] private List<MissionSO> missionTemplates;
+    [SerializeField] private List<Mission> missionList;
 
 
-    public void GenerateRandomMission()
-    {
-
-    }
 
 }

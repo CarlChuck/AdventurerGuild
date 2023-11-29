@@ -7,7 +7,7 @@ public class Item : MonoBehaviour
     private string itemName;
     private ItemSO itemBase;
     private ItemType itemType;
-    private ItemQuality itemQuality;
+    private Quality itemQuality;
     private Stat combat;
     private Stat healing;
     private Stat social;
@@ -32,7 +32,7 @@ public class Item : MonoBehaviour
         hunting.SetValue(item.hunting);
         magic.SetValue(item.magic);
         craft.SetValue(item.craft);
-        SetItemQuality(ItemQuality.Common);
+        SetItemQuality(Quality.Common);
     }
     private void InitialiseStats()
     {
@@ -52,27 +52,27 @@ public class Item : MonoBehaviour
         magic.InitialiseStat("Magic");
         craft.InitialiseStat("Craft");
     }
-    public void SetItemQuality(ItemQuality qual)
+    public void SetItemQuality(Quality qual)
     {
         itemQuality = qual;
         AddQuality(qual);
     }
-    private void AddQuality(ItemQuality qual)
+    private void AddQuality(Quality qual)
     {
         switch (qual)
         {
-            case ItemQuality.Common:
+            case Quality.Common:
                 break;
-            case ItemQuality.Uncommon:
+            case Quality.Uncommon:
                 AddAStatToItem(1);
                 break;
-            case ItemQuality.Masterwork:
+            case Quality.Masterwork:
                 AddAStatToItem(2);
                 break;
-            case ItemQuality.Rare:
+            case Quality.Rare:
                 AddAStatToItem(3);
                 break;
-            case ItemQuality.Legendary:
+            case Quality.Legendary:
                 AddAStatToItem(4);
                 break;
             default:
@@ -96,15 +96,15 @@ public class Item : MonoBehaviour
         }
     }
 
-    private void SetGoldValue(ItemQuality qual)
+    private void SetGoldValue(Quality qual)
     {
         int multiplier = qual switch
         {
-            ItemQuality.Common => 1,
-            ItemQuality.Uncommon => 2,
-            ItemQuality.Masterwork => 4,
-            ItemQuality.Rare => 8,
-            ItemQuality.Legendary => 16,
+            Quality.Common => 1,
+            Quality.Uncommon => 2,
+            Quality.Masterwork => 4,
+            Quality.Rare => 8,
+            Quality.Legendary => 16,
             _ => 1
         };
         goldValue = itemBase.value * multiplier;
@@ -237,10 +237,10 @@ public class Item : MonoBehaviour
     {
         return goldValue;
     }
-    public ItemQuality GetItemQuality()
+    public Quality GetItemQuality()
     {
         return itemQuality;
     }
 }
 public enum ItemType { Weapon, Outfit, Accessory}
-public enum ItemQuality { Common, Uncommon, Masterwork, Rare, Legendary}
+public enum Quality { Common, Uncommon, Masterwork, Rare, Legendary}

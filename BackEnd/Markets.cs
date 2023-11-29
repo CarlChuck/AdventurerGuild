@@ -16,6 +16,8 @@ public class Markets : MonoBehaviour
         {
             Instance = this;
         }
+        marketRecruits = new();
+        marketItems = new();
     }
     #endregion
     [SerializeField] private Transform marketItemsParent;
