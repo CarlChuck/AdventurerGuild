@@ -16,16 +16,23 @@ public class MissionGen : MonoBehaviour
         {
             Instance = this;
         }
-        missionTemplates = new();
     }
     #endregion
     [SerializeField] private GameObject missionPrefab;
     [SerializeField] private List<MissionSO> missionTemplates;
+    [SerializeField] private List<MissionSO> taskTemplates;
 
 
-    public void GenerateRandomMission()
+    public Mission GenerateRandomMission(Transform parent)
     {
-
+        GameObject newItemObject = Instantiate(missionPrefab, parent);
+        Mission newMission = newItemObject.GetComponent<Mission>();
+        newMission.SetMission(GetRandomMissionTemplate());
+        return newMission;
     }
-
+    private MissionSO GetRandomMissionTemplate()
+    {
+        int rand = Random.Range(1, missionTemplates.Count);
+        return missionTemplates[rand];
+    }
 }

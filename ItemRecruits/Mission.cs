@@ -28,6 +28,7 @@ public class Mission : MonoBehaviour
     private Adventurer adventurerSlot4;
     private int missionTime;
     private MissionState missionState;
+    private int startTime;
 
     #region Setters
     public void SetMission(MissionSO theMission)
@@ -44,7 +45,7 @@ public class Mission : MonoBehaviour
         SetMissionTime();
         craftType = theMission.ifCrafter;
         missionState = MissionState.Available;
-        adventurersOnMission.Clear();
+        adventurersOnMission = new();
         adventurerSlot1 = null;
         adventurerSlot2 = null;
         adventurerSlot3 = null;
@@ -249,14 +250,44 @@ public class Mission : MonoBehaviour
     {
         if (missionState == MissionState.Available)
         {
-
+            if (adventurerSlot1 == null)
+            {
+                adventurerSlot1 = adventurerToAssign;
+            }
+            else if (adventurerSlot2 == null)
+            {
+                adventurerSlot2 = adventurerToAssign;
+            }
+            else if (adventurerSlot3 == null)
+            {
+                adventurerSlot3 = adventurerToAssign;
+            }
+            else if (adventurerSlot4 == null)
+            {
+                adventurerSlot4 = adventurerToAssign;
+            }
         }
     }
     public void RemoveAdventurer(Adventurer adventurerToRemove)
     {
         if (missionState == MissionState.Available)
         {
-
+            if (adventurerSlot1 == adventurerToRemove)
+            {
+                adventurerSlot1 = null;
+            }
+            else if (adventurerSlot2 == adventurerToRemove)
+            {
+                adventurerSlot2 = null;
+            }
+            else if (adventurerSlot3 == adventurerToRemove)
+            {
+                adventurerSlot3 = null;
+            }
+            else if (adventurerSlot4 == adventurerToRemove)
+            {
+                adventurerSlot4 = null;
+            }
         }
     }
     public void BeginMission()

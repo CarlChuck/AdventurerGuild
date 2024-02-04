@@ -33,11 +33,12 @@ public class Guild : MonoBehaviour
         ClearAdventurers();
         ClearItems();
         guildName = gName;
-        gold = 10000;
+        gold = 1000;
         goldMil = 0;
         AddStartingAdventurers();
         AddStartingItems();
         Markets.Instance.InitialiseMarket();
+        MissionManager.Instance.InitaliseMissions();
     }
     public void LoadSavedGuild()
     {

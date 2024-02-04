@@ -245,18 +245,31 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     #region Tasks
+    [Header("Tasks")]
+    [SerializeField] private Transform taskContainer;
+    [SerializeField] private GameObject taskitemPrefab;
 
     #endregion
     #region Actions
+    [Header("Actions")]
+    [SerializeField] private Transform actionContainer;
+    [SerializeField] private GameObject actionitemPrefab;
 
     #endregion
     #region InProgress
+    [Header("In Progress")]
+    [SerializeField] private Transform inProgressContainer;
+    [SerializeField] private GameObject inProgressitemPrefab;
 
     #endregion
     #region Completed
+    [Header("Completed")]
+    [SerializeField] private Transform completedContainer;
+    [SerializeField] private GameObject completeditemPrefab;
 
     #endregion
     #region Market
+    [Header("Market")]
     [SerializeField] private Transform marketContainer;
     [SerializeField] private GameObject marketItemPrefab;
     [SerializeField] private List<UIMarketItemEntry> marketList;
@@ -292,6 +305,8 @@ public class UIManager : MonoBehaviour
 
     #endregion
     #region Recruit
+
+    [Header("Recruit")]
     [SerializeField] private Transform recruitContainer;
     [SerializeField] private GameObject marketRecruitPrefab;
     [SerializeField] private List<UIMarketRecruitEntry> recruitList;
