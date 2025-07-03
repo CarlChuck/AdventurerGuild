@@ -226,4 +226,37 @@ public class Guild : MonoBehaviour
         UIManager.Instance.SetGoldAmount(GetGoldMil(), GetGold());
     }
     #endregion
+    #region Mission Rewards
+    public void DistributeMissionRewards(MissionRewards rewards)
+    {
+        // Add gold to guild treasury
+        if (rewards.gold > 0)
+        {
+            AddGold(rewards.gold);
+        }
+        
+        // Add experience to adventurers who participated
+        foreach (Adventurer adventurer in rewards.adventurersToReward)
+        {
+            if (adventurer != null && rewards.experiencePerAdventurer > 0)
+            {
+                adventurer.AddExperience(rewards.experiencePerAdventurer);
+            }
+        }
+        
+        // Add items to guild inventory
+        if (rewards.items != null)
+        {
+            foreach (Item item in rewards.items)
+            {
+                if (item != null)
+                {
+                    AddItemToInventory(item);
+                }
+            }
+        }
+        
+        // TODO: Trigger UI notification for mission completion rewards
+    }
+    #endregion
 }

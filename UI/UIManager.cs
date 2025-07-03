@@ -248,7 +248,35 @@ public class UIManager : MonoBehaviour
     [Header("Tasks")]
     [SerializeField] private Transform taskContainer;
     [SerializeField] private GameObject taskitemPrefab;
+    [SerializeField] private List<UIMissionEntry> missionList;
 
+    public void OnButtonTasks()
+    {
+        PopulateTaskList(MissionManager.Instance.GetTaskList());
+    }
+    public void OnButtonOpenTask(Mission mission)
+    {
+
+    }
+    public void PopulateTaskList(List<Mission> listOfTasksIn)
+    {
+        ClearTaskList();
+        foreach (Mission mission in listOfTasksIn)
+        {
+            GameObject newMission = Instantiate(taskitemPrefab, taskContainer);
+            UIMissionEntry missionEntry = newMission.GetComponent<UIMissionEntry>();
+            missionList.Add(missionEntry);
+            missionEntry.SetStats(mission);
+        }
+    }
+    public void ClearTaskList()
+    {
+        foreach (UIMissionEntry child in missionList)
+        {
+            Destroy(child.gameObject);
+        }
+        missionList.Clear();
+    }
     #endregion
     #region Actions
     [Header("Actions")]
