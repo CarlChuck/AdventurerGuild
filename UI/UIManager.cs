@@ -249,6 +249,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform taskContainer;
     [SerializeField] private GameObject taskitemPrefab;
     [SerializeField] private List<UIMissionEntry> missionList;
+    [SerializeField] private UIFullMission missionDetailUI;
 
     public void OnButtonTasks()
     {
@@ -256,7 +257,10 @@ public class UIManager : MonoBehaviour
     }
     public void OnButtonOpenTask(Mission mission)
     {
-
+        if (missionDetailUI != null && mission != null)
+        {
+            missionDetailUI.DisplayMission(mission);
+        }
     }
     public void PopulateTaskList(List<Mission> listOfTasksIn)
     {
@@ -277,6 +281,29 @@ public class UIManager : MonoBehaviour
         }
         missionList.Clear();
     }
+    
+    public void RefreshMissionLists()
+    {
+        // Refresh all mission tabs based on current tab
+        RefreshCurrentTab();
+    }
+    
+    private void RefreshCurrentTab()
+    {
+        // Determine which tab is currently active and refresh it
+        if (taskTab.activeInHierarchy)
+        {
+            OnButtonTasks();
+        }
+        else if (inProgressTab.activeInHierarchy)
+        {
+            OnButtonInProgress();
+        }
+        else if (completedTab.activeInHierarchy)
+        {
+            OnButtonCompleted();
+        }
+    }
     #endregion
     #region Actions
     [Header("Actions")]
@@ -288,13 +315,79 @@ public class UIManager : MonoBehaviour
     [Header("In Progress")]
     [SerializeField] private Transform inProgressContainer;
     [SerializeField] private GameObject inProgressitemPrefab;
-
+    [SerializeField] private List<UIMissionInProgress> inProgressMissionList;
+    
+    public void OnButtonInProgress()
+    {
+        PopulateInProgressList(MissionManager.Instance.GetInProgressList());
+    }
+    
+    private void PopulateInProgressList(List<Mission> inProgressMissions)
+    {
+        ClearInProgressList();
+        foreach (Mission mission in inProgressMissions)
+        {
+            GameObject newMission = Instantiate(inProgressitemPrefab, inProgressContainer);
+            UIMissionInProgress missionEntry = newMission.GetComponent<UIMissionInProgress>();
+            if (missionEntry != null)
+            {
+                inProgressMissionList.Add(missionEntry);
+                missionEntry.SetMission(mission);
+            }
+        }
+    }
+    
+    private void ClearInProgressList()
+    {
+        if (inProgressMissionList == null)
+            inProgressMissionList = new List<UIMissionInProgress>();
+            
+        foreach (UIMissionInProgress child in inProgressMissionList)
+        {
+            if (child != null && child.gameObject != null)
+                Destroy(child.gameObject);
+        }
+        inProgressMissionList.Clear();
+    }
     #endregion
     #region Completed
     [Header("Completed")]
     [SerializeField] private Transform completedContainer;
     [SerializeField] private GameObject completeditemPrefab;
-
+    [SerializeField] private List<UIMissionCompleted> completedMissionList;
+    
+    public void OnButtonCompleted()
+    {
+        PopulateCompletedList(MissionManager.Instance.GetCompletedList());
+    }
+    
+    private void PopulateCompletedList(List<Mission> completedMissions)
+    {
+        ClearCompletedList();
+        foreach (Mission mission in completedMissions)
+        {
+            GameObject newMission = Instantiate(completeditemPrefab, completedContainer);
+            UIMissionCompleted missionEntry = newMission.GetComponent<UIMissionCompleted>();
+            if (missionEntry != null)
+            {
+                completedMissionList.Add(missionEntry);
+                missionEntry.SetMission(mission);
+            }
+        }
+    }
+    
+    private void ClearCompletedList()
+    {
+        if (completedMissionList == null)
+            completedMissionList = new List<UIMissionCompleted>();
+            
+        foreach (UIMissionCompleted child in completedMissionList)
+        {
+            if (child != null && child.gameObject != null)
+                Destroy(child.gameObject);
+        }
+        completedMissionList.Clear();
+    }
     #endregion
     #region Market
     [Header("Market")]
