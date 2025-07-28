@@ -120,7 +120,14 @@ public class Adventurer : MonoBehaviour
     }
     private void SetAdventurerName()
     {
-        adventurerName = "thisAdventurer"; //TODO
+        if (NameGen.Instance.AreNamesLoaded())
+        {
+            adventurerName = NameGen.Instance.GenerateRandomName(genderM);
+        }
+        else
+        {
+            adventurerName = "Unnamed Adventurer";
+        }
     }
     #endregion
     #region XP and Level

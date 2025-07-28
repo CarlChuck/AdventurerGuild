@@ -28,7 +28,7 @@ public class UIManager : MonoBehaviour
     [Header("Tabs")]
     [SerializeField] private GameObject rosterTab;
     [SerializeField] private GameObject taskTab;
-    [SerializeField] private GameObject actionTab;
+    //[SerializeField] private GameObject actionTab;
     [SerializeField] private GameObject inProgressTab;
     [SerializeField] private GameObject completedTab;
     [SerializeField] private GameObject marketTab;
@@ -46,7 +46,7 @@ public class UIManager : MonoBehaviour
                 taskTab.SetActive(true);
                 break;
             case 3:
-                actionTab.SetActive(true);
+                //actionTab.SetActive(true);
                 break;
             case 4:
                 inProgressTab.SetActive(true);
@@ -69,7 +69,7 @@ public class UIManager : MonoBehaviour
     {
         rosterTab.SetActive(false);
         taskTab.SetActive(false);
-        actionTab.SetActive(false);
+        //actionTab.SetActive(false);
         inProgressTab.SetActive(false);
         completedTab.SetActive(false);
         marketTab.SetActive(false);
@@ -107,6 +107,7 @@ public class UIManager : MonoBehaviour
         goldAmount.text = goldString;
     }
     #endregion
+    
     #region Roster
     [Header("Roster")]
     [SerializeField] private GameObject rosterPrefab;
@@ -244,16 +245,19 @@ public class UIManager : MonoBehaviour
         }
     }
     #endregion
+    
     #region Tasks
     [Header("Tasks")]
     [SerializeField] private Transform taskContainer;
     [SerializeField] private GameObject taskitemPrefab;
     [SerializeField] private List<UIMissionEntry> missionList;
     [SerializeField] private UIFullMission missionDetailUI;
+    [SerializeField] private GameObject missionDetailUIPane;
 
     public void OnButtonTasks()
     {
         PopulateTaskList(MissionManager.Instance.GetTaskList());
+        missionDetailUIPane.SetActive(false);
     }
     public void OnButtonOpenTask(Mission mission)
     {
@@ -261,6 +265,7 @@ public class UIManager : MonoBehaviour
         {
             missionDetailUI.DisplayMission(mission);
         }
+        missionDetailUIPane.SetActive(true);
     }
     public void PopulateTaskList(List<Mission> listOfTasksIn)
     {
@@ -305,12 +310,15 @@ public class UIManager : MonoBehaviour
         }
     }
     #endregion
+    
+    /*
     #region Actions
     [Header("Actions")]
     [SerializeField] private Transform actionContainer;
     [SerializeField] private GameObject actionitemPrefab;
-
     #endregion
+    */
+    
     #region InProgress
     [Header("In Progress")]
     [SerializeField] private Transform inProgressContainer;

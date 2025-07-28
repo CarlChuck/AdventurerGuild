@@ -41,13 +41,20 @@ public class UIFullMission : MonoBehaviour
     {
         // Setup button listeners
         if (startMissionButton != null)
+        {
             startMissionButton.onClick.AddListener(OnStartMission);
+        }
+
         if (cancelButton != null)
+        {
             cancelButton.onClick.AddListener(OnCancel);
-            
+        }
+
         // Start closed
         if (missionPanel != null)
+        {
             missionPanel.SetActive(false);
+        }
     }
     
     public void DisplayMission(Mission mission)
@@ -55,8 +62,10 @@ public class UIFullMission : MonoBehaviour
         currentMission = mission;
         
         if (missionPanel != null)
+        {
             missionPanel.SetActive(true);
-            
+        }
+
         // Update mission details
         UpdateMissionInfo();
         UpdateMissionRequirements();
@@ -66,42 +75,88 @@ public class UIFullMission : MonoBehaviour
     
     private void UpdateMissionInfo()
     {
-        if (currentMission == null) return;
-        
+        if (currentMission == null)
+        {
+            return;
+        }
+
         if (missionName != null)
+        {
             missionName.text = currentMission.GetMissionName();
+        }
+
         if (missionLevel != null)
+        {
             missionLevel.text = "Level " + currentMission.GetMissionLevel().ToString();
+        }
+
         if (missionQuality != null)
+        {
             missionQuality.text = currentMission.GetMissionQuality().ToString();
+        }
+
         if (missionTime != null)
+        {
             missionTime.text = FormatTime(currentMission.GetMissionTime());
+        }
+
         if (goldReward != null)
+        {
             goldReward.text = currentMission.GetGoldValue().ToString() + " Gold";
+        }
     }
     
     private void UpdateMissionRequirements()
     {
-        if (currentMission == null) return;
+        if (currentMission == null)
+        {
+            return;
+        }
+
+        currentMission.GetStats(out int combat, out int healing, out int social, out int subterfuge, out int hunting,
+            out int magic, out int craft, out IfCrafter outCraftType);
         
-        currentMission.GetStats(out int combat, out int healing, out int social, 
-                               out int subterfuge, out int hunting, out int magic, 
-                               out int craft, out IfCrafter craftType);
-        
-        if (combatReq != null) combatReq.text = combat.ToString();
-        if (healingReq != null) healingReq.text = healing.ToString();
-        if (socialReq != null) socialReq.text = social.ToString();
-        if (subterfugeReq != null) subterfugeReq.text = subterfuge.ToString();
-        if (huntingReq != null) huntingReq.text = hunting.ToString();
-        if (magicReq != null) magicReq.text = magic.ToString();
-        if (craftReq != null) craftReq.text = craft.ToString();
-        if (this.craftType != null) this.craftType.text = craftType.ToString();
+        if (combatReq != null)
+        {
+            combatReq.text = combat.ToString();
+        }
+        if (healingReq != null)
+        {
+            healingReq.text = healing.ToString();
+        }
+        if (socialReq != null)
+        {
+            socialReq.text = social.ToString();
+        }
+        if (subterfugeReq != null)
+        {
+            subterfugeReq.text = subterfuge.ToString();
+        }
+        if (huntingReq != null)
+        {
+            huntingReq.text = hunting.ToString();
+        }
+        if (magicReq != null)
+        {
+            magicReq.text = magic.ToString();
+        }
+        if (craftReq != null)
+        {
+            craftReq.text = craft.ToString();
+        }
+        if (craftType != null)
+        {
+            craftType.text = outCraftType.ToString();
+        }
     }
     
     private void SetupAdventurerSlots()
     {
-        if (currentMission == null || adventurerSlotsContainer == null || adventurerSlotPrefab == null) return;
-        
+        if (currentMission == null || adventurerSlotsContainer == null || adventurerSlotPrefab == null)
+        {
+            return;
+        }
+
         // Clear existing slots
         ClearAdventurerSlots();
         
@@ -124,7 +179,9 @@ public class UIFullMission : MonoBehaviour
         foreach (UIAdventurerSlot slot in adventurerSlots)
         {
             if (slot != null && slot.gameObject != null)
+            {
                 Destroy(slot.gameObject);
+            }
         }
         adventurerSlots.Clear();
     }
@@ -149,7 +206,10 @@ public class UIFullMission : MonoBehaviour
     
     private void UpdateTeamDisplay()
     {
-        if (currentMission == null) return;
+        if (currentMission == null)
+        {
+            return;
+        }
         
         // Calculate current team stats
         currentMission.CalculateTeamStats(out int teamCombat, out int teamHealing, out int teamSocial,
@@ -228,7 +288,10 @@ public class UIFullMission : MonoBehaviour
     private void OnCancel()
     {
         if (missionPanel != null)
+        {
             missionPanel.SetActive(false);
+        }
+
         currentMission = null;
         ClearAdventurerSlots();
     }

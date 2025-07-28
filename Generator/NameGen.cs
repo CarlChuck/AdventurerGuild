@@ -5,21 +5,61 @@ using UnityEngine;
 
 public class NameGen : MonoBehaviour
 {
-    private List<string> firstNames;
+    #region Singleton
+    public static NameGen Instance;
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+    #endregion
+
+    private List<string> maleFirstNames;
+    private List<string> femaleFirstNames;
     private List<string> lastNames;
+    private bool namesLoaded = false;
 
     private void Start()
     {
-        firstNames = new List<string>();
+        maleFirstNames = new List<string>();
+        femaleFirstNames = new List<string>();
         lastNames = new List<string>();
+        LoadAllNames();
     }
-    private void LoadNamesFromCSV(string filePath)
+    private void LoadAllNames()
     {
-        using StreamReader reader = new StreamReader(filePath);
-        while (!reader.EndOfStream)
+        try
         {
-            string line = reader.ReadLine();
-            if (string.IsNullOrEmpty(line))
+            LoadNamesFromCSV("first_names", true);
+            LoadNamesFromCSV("last_names", false);
+            namesLoaded = true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to load name data: {e.Message}");
+            namesLoaded = false;
+        }
+    }
+
+    private void LoadNamesFromCSV(string fileName, bool isFirstNames)
+    {
+        TextAsset csvFile = Resources.Load<TextAsset>(fileName);
+        if (csvFile == null)
+        {
+            Debug.LogError($"Could not find {fileName}.csv in Resources folder");
+            return;
+        }
+
+        string[] lines = csvFile.text.Split('\n');
+        foreach (string line in lines)
+        {
+            if (string.IsNullOrEmpty(line.Trim()))
             {
                 continue;
             }
@@ -30,21 +70,42 @@ public class NameGen : MonoBehaviour
                 continue;
             }
 
-            firstNames.Add(values[0].Trim());
-            lastNames.Add(values[1].Trim());
+            if (isFirstNames)
+            {
+                maleFirstNames.Add(values[0].Trim());
+                femaleFirstNames.Add(values[1].Trim());
+            }
+            else
+            {
+                lastNames.Add(values[0].Trim());
+                lastNames.Add(values[1].Trim());
+            }
         }
     }
 
-    private string GenerateRandomName()
+    public string GenerateRandomName(bool isMale = true)
     {
-        if (firstNames.Count == 0 || lastNames.Count == 0)
+        if (!namesLoaded || lastNames.Count == 0)
         {
-            return "No names loaded";
+            Debug.LogWarning("Names not loaded properly, using fallback");
+            return "Unnamed Adventurer";
         }
 
-        string firstName = firstNames[Random.Range(0, firstNames.Count)];
+        List<string> firstNameList = isMale ? maleFirstNames : femaleFirstNames;
+        if (firstNameList.Count == 0)
+        {
+            Debug.LogWarning($"No {(isMale ? "male" : "female")} first names loaded");
+            return "Unnamed Adventurer";
+        }
+
+        string firstName = firstNameList[Random.Range(0, firstNameList.Count)];
         string lastName = lastNames[Random.Range(0, lastNames.Count)];
         return firstName + " " + lastName;
+    }
+
+    public bool AreNamesLoaded()
+    {
+        return namesLoaded;
     }
 
 }
