@@ -130,6 +130,61 @@ public class Guild : MonoBehaviour
         }
         return levelToReturn;
     }
+    
+    public List<Adventurer> GetAdventurersOnActiveMissions()
+    {
+        List<Adventurer> busyAdventurers = new List<Adventurer>();
+        
+        if (MissionManager.Instance != null)
+        {
+            List<Mission> activeMissions = MissionManager.Instance.GetInProgressList();
+            List<Mission> completedMissions = MissionManager.Instance.GetCompletedList();
+            
+            // Check in-progress missions
+            foreach (Mission mission in activeMissions)
+            {
+                List<Adventurer> missionAdventurers = mission.GetAdventurersOnMission();
+                foreach (Adventurer adventurer in missionAdventurers)
+                {
+                    if (adventurer != null && !busyAdventurers.Contains(adventurer))
+                    {
+                        busyAdventurers.Add(adventurer);
+                    }
+                }
+            }
+            
+            // Check completed missions (adventurers may still be "returning")
+            foreach (Mission mission in completedMissions)
+            {
+                List<Adventurer> missionAdventurers = mission.GetAdventurersOnMission();
+                foreach (Adventurer adventurer in missionAdventurers)
+                {
+                    if (adventurer != null && !busyAdventurers.Contains(adventurer))
+                    {
+                        busyAdventurers.Add(adventurer);
+                    }
+                }
+            }
+        }
+        
+        return busyAdventurers;
+    }
+    
+    public List<Adventurer> GetAvailableAdventurers()
+    {
+        List<Adventurer> availableAdventurers = new List<Adventurer>();
+        List<Adventurer> busyAdventurers = GetAdventurersOnActiveMissions();
+        
+        foreach (Adventurer adventurer in adventurers)
+        {
+            if (!busyAdventurers.Contains(adventurer))
+            {
+                availableAdventurers.Add(adventurer);
+            }
+        }
+        
+        return availableAdventurers;
+    }
     #endregion
     #region Adventurers
     public void AddAdventurer(Adventurer adventurer)

@@ -94,7 +94,14 @@ public class Mission : MonoBehaviour
     }
     private void SetMissionName()
     {
-        missionName = "theMission"; //TODO
+        if (NameGen.Instance != null && NameGen.Instance.AreMissionNamesLoaded())
+        {
+            missionName = NameGen.Instance.GenerateRandomMissionName(missionType, missionRarity);
+        }
+        else
+        {
+            missionName = "Unnamed Mission";
+        }
     }
     private void SetMissionStats()
     {
@@ -178,7 +185,61 @@ public class Mission : MonoBehaviour
     }
     private void SetMissionTime()
     {
-        missionTime = missionBase.missionTime;
+        // If ScriptableObject has a mission time set, use it, otherwise assign defaults
+        missionTime = missionBase.missionTime > 0 ? missionBase.missionTime : GetBaseMissionDuration();
+                    
+        // Scale duration based on mission level and rarity
+        float difficultyMultiplier = 1.0f + (missionLevel * 0.1f);
+        float rarityMultiplier = missionRarity switch
+        {
+            Quality.Common => 1.0f,
+            Quality.Uncommon => 1.2f,
+            Quality.Masterwork => 1.5f,
+            Quality.Rare => 2.0f,
+            Quality.Legendary => 3.0f,
+            _ => 1.0f
+        };
+            
+        missionTime = (int)(missionTime * difficultyMultiplier * rarityMultiplier);
+        missionTime = Random.Range((int)(missionTime * 0.7f), (int)(missionTime * 1.3f)); // Randomize time by 2 minutes
+    }
+    
+    private int GetBaseMissionDuration()
+    {
+        // Base durations in seconds for different mission types
+        return missionType switch
+        {
+            // Quick missions (2-5 minutes)
+            MissionType.CraftingOrder => Random.Range(120, 300),
+            MissionType.HerbGather => Random.Range(180, 300),
+            MissionType.Cure => Random.Range(120, 240),
+            
+            // Medium missions (5-10 minutes)  
+            MissionType.Healing => Random.Range(300, 600),
+            MissionType.Entertain => Random.Range(240, 480),
+            MissionType.Diplomacy => Random.Range(360, 600),
+            MissionType.Networking => Random.Range(300, 540),
+            MissionType.Stealth => Random.Range(300, 600),
+            MissionType.Smuggling => Random.Range(420, 720),
+            MissionType.Larceny => Random.Range(240, 480),
+            MissionType.Enchantment => Random.Range(360, 600),
+            MissionType.Divination => Random.Range(300, 540),
+            MissionType.OreRefinement => Random.Range(300, 600),
+            
+            // Long missions (8-15 minutes)
+            MissionType.Patrol => Random.Range(480, 900),
+            MissionType.Defence => Random.Range(600, 900),
+            MissionType.Dungeon => Random.Range(600, 900),
+            MissionType.MonsterHunt => Random.Range(540, 840),
+            MissionType.BountyHunt => Random.Range(480, 780),
+            MissionType.Scouting => Random.Range(420, 720),
+            MissionType.SpiritQuest => Random.Range(600, 900),
+            MissionType.MiningExpedition => Random.Range(540, 840),
+            MissionType.WoodcuttingExpedition => Random.Range(480, 780),
+            
+            // Default fallback
+            _ => Random.Range(300, 600)
+        };
     }
     #endregion
     #region Getters
@@ -282,6 +343,9 @@ public class Mission : MonoBehaviour
             {
                 adventurerSlot4 = adventurerToAssign;
             }
+            
+            // Update the adventurers list to keep it in sync
+            UpdateAdventurersOnMissionList();
         }
     }
     public void RemoveAdventurer(Adventurer adventurerToRemove)
@@ -304,6 +368,9 @@ public class Mission : MonoBehaviour
             {
                 adventurerSlot4 = null;
             }
+            
+            // Update the adventurers list to keep it in sync
+            UpdateAdventurersOnMissionList();
         }
     }
     public void BeginMission()
@@ -317,6 +384,8 @@ public class Mission : MonoBehaviour
     public void OnMissionEnd()
     {
         missionState = MissionState.Completed;
+        // Note: Adventurers remain assigned to completed missions for reward distribution
+        // They will be filtered out from available adventurers until mission is cleared from completed list
     }
     public float GetRemainingTime()
     {

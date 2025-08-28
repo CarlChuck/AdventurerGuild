@@ -134,8 +134,15 @@ public class MissionManager : MonoBehaviour
             if (taskList.Contains(mission))
             {
                 activeTaskList.Add(mission);
+                taskList.Remove(mission);
+                mission.transform.SetParent(InProgressList);
             }
-            // TODO: Handle action missions when implemented
+            
+            // Trigger UI refresh to update all mission tabs immediately
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.RefreshMissionLists();
+            }
         }
     }
     
@@ -155,7 +162,17 @@ public class MissionManager : MonoBehaviour
         activeTaskList.Remove(mission);
         completedMissionList.Add(mission);
         
-        // TODO: Trigger UI update for mission completion
+        // Update Transform hierarchy
+        if (mission.transform != null && CompleteList != null)
+        {
+            mission.transform.SetParent(CompleteList);
+        }
+        
+        // Trigger UI update for mission completion
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.RefreshMissionLists();
+        }
     }
     
     public List<Mission> GetCompletedMissions()
@@ -168,13 +185,38 @@ public class MissionManager : MonoBehaviour
         // Remove old completed missions (keep last 20)
         while (completedMissionList.Count > 20)
         {
+            Mission missionToRemove = completedMissionList[0];
             completedMissionList.RemoveAt(0);
+            
+            // Clean up the mission GameObject
+            if (missionToRemove != null && missionToRemove.gameObject != null)
+            {
+                Destroy(missionToRemove.gameObject);
+            }
         }
         
         // Add new missions to task list
         while (taskList.Count < 10)
         {
             taskList.Add(MissionGen.Instance.GenerateRandomMission(TaskList));
+        }
+    }
+    
+    public void ClearCompletedMissions()
+    {
+        foreach (Mission mission in completedMissionList)
+        {
+            if (mission != null && mission.gameObject != null)
+            {
+                Destroy(mission.gameObject);
+            }
+        }
+        completedMissionList.Clear();
+        
+        // Trigger UI refresh
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.RefreshMissionLists();
         }
     }
 }

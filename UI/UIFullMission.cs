@@ -51,6 +51,7 @@ public class UIFullMission : MonoBehaviour
         }
 
         // Start closed
+        
         if (missionPanel != null)
         {
             missionPanel.SetActive(false);
@@ -60,17 +61,16 @@ public class UIFullMission : MonoBehaviour
     public void DisplayMission(Mission mission)
     {
         currentMission = mission;
-        
-        if (missionPanel != null)
-        {
-            missionPanel.SetActive(true);
-        }
 
         // Update mission details
         UpdateMissionInfo();
         UpdateMissionRequirements();
         SetupAdventurerSlots();
-        UpdateTeamDisplay();
+        UpdateTeamDisplay();        
+        if (missionPanel != null)
+        {
+            missionPanel.SetActive(true);
+        }
     }
     
     private void UpdateMissionInfo()
@@ -247,20 +247,26 @@ public class UIFullMission : MonoBehaviour
     public List<Adventurer> GetAvailableAdventurers()
     {
         List<Adventurer> availableAdventurers = new List<Adventurer>();
-        List<Adventurer> allAdventurers = Guild.Instance.GetAdventurers();
         
-        foreach (Adventurer adventurer in allAdventurers)
+        // Get adventurers who are not on any active missions
+        List<Adventurer> freeAdventurers = Guild.Instance.GetAvailableAdventurers();
+        
+        foreach (Adventurer adventurer in freeAdventurers)
         {
             // Check if adventurer is not already assigned to this mission
             bool alreadyAssigned = false;
-            List<Adventurer> assignedAdventurers = currentMission.GetAdventurersOnMission();
             
-            foreach (Adventurer assigned in assignedAdventurers)
+            if (currentMission != null)
             {
-                if (assigned == adventurer)
+                List<Adventurer> assignedAdventurers = currentMission.GetAdventurersOnMission();
+                
+                foreach (Adventurer assigned in assignedAdventurers)
                 {
-                    alreadyAssigned = true;
-                    break;
+                    if (assigned == adventurer)
+                    {
+                        alreadyAssigned = true;
+                        break;
+                    }
                 }
             }
             
@@ -280,13 +286,13 @@ public class UIFullMission : MonoBehaviour
             MissionManager.Instance.StartMission(currentMission);
             OnCancel(); // Close the popup
             
-            // Refresh the mission lists in UI
-            UIManager.Instance.RefreshMissionLists();
+            // UI refresh is now handled by MissionManager.StartMission()
         }
     }
     
     private void OnCancel()
     {
+        
         if (missionPanel != null)
         {
             missionPanel.SetActive(false);

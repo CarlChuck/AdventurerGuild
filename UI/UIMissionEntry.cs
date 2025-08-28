@@ -6,7 +6,7 @@ using UnityEngine;
 public class UIMissionEntry : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI missionName;
-    [SerializeField] private TextMeshProUGUI missionLevel;
+    //[SerializeField] private TextMeshProUGUI missionLevel;
     [SerializeField] private TextMeshProUGUI combat;
     [SerializeField] private TextMeshProUGUI healing;
     [SerializeField] private TextMeshProUGUI social;
@@ -31,11 +31,23 @@ public class UIMissionEntry : MonoBehaviour
         hunting.text = mHunting.ToString();
         magic.text = mMagic.ToString();
         craft.text = mCraft.ToString();
-        craftType.text = mCraftType.ToString();
-
+        craftType.text = mCraftType == IfCrafter.NA ? "" : mCraftType.ToString();
     }
     public void OnButtonPress()
     {
+        
+        if (UIManager.Instance == null)
+        {
+            Debug.LogError("UIMissionEntry: UIManager.Instance is null!");
+            return;
+        }
+        
+        if (missionReference == null)
+        {
+            Debug.LogError("UIMissionEntry: missionReference is null!");
+            return;
+        }
+        
         UIManager.Instance.OnButtonOpenTask(missionReference);
     }
 }

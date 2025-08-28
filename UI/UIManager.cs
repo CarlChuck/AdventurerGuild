@@ -249,30 +249,36 @@ public class UIManager : MonoBehaviour
     #region Tasks
     [Header("Tasks")]
     [SerializeField] private Transform taskContainer;
-    [SerializeField] private GameObject taskitemPrefab;
+    [SerializeField] private GameObject taskItemPrefab;
     [SerializeField] private List<UIMissionEntry> missionList;
     [SerializeField] private UIFullMission missionDetailUI;
-    [SerializeField] private GameObject missionDetailUIPane;
 
     public void OnButtonTasks()
     {
         PopulateTaskList(MissionManager.Instance.GetTaskList());
-        missionDetailUIPane.SetActive(false);
     }
     public void OnButtonOpenTask(Mission mission)
     {
-        if (missionDetailUI != null && mission != null)
+        if (missionDetailUI == null)
         {
-            missionDetailUI.DisplayMission(mission);
+            Debug.LogError("UIManager: missionDetailUI is null - cannot display mission details");
+            return;
         }
-        missionDetailUIPane.SetActive(true);
+        
+        if (mission == null)
+        {
+            Debug.LogError("UIManager: mission is null - cannot display mission details");
+            return;
+        } 
+        
+        missionDetailUI.DisplayMission(mission);
     }
     public void PopulateTaskList(List<Mission> listOfTasksIn)
     {
         ClearTaskList();
         foreach (Mission mission in listOfTasksIn)
         {
-            GameObject newMission = Instantiate(taskitemPrefab, taskContainer);
+            GameObject newMission = Instantiate(taskItemPrefab, taskContainer);
             UIMissionEntry missionEntry = newMission.GetComponent<UIMissionEntry>();
             missionList.Add(missionEntry);
             missionEntry.SetStats(mission);
@@ -289,8 +295,33 @@ public class UIManager : MonoBehaviour
     
     public void RefreshMissionLists()
     {
-        // Refresh all mission tabs based on current tab
-        RefreshCurrentTab();
+        // Refresh ALL mission tabs regardless of which is currently active
+        // This ensures mission state changes are reflected across all tabs
+        RefreshAllMissionTabs();
+        
+        // Also refresh roster availability status
+        RefreshRosterAvailability();
+    }
+    
+    private void RefreshAllMissionTabs()
+    {
+        // Always refresh all mission tabs when mission states change
+        // This prevents stale data when missions move between states
+        OnButtonTasks();
+        OnButtonInProgress(); 
+        OnButtonCompleted();
+    }
+    
+    private void RefreshRosterAvailability()
+    {
+        // Update availability status for all roster entries
+        foreach (UIRosterEntry rosterEntry in rosterList)
+        {
+            if (rosterEntry != null)
+            {
+                rosterEntry.RefreshAvailabilityStatus();
+            }
+        }
     }
     
     private void RefreshCurrentTab()
