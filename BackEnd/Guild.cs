@@ -42,18 +42,57 @@ public class Guild : MonoBehaviour
     }
     public void LoadSavedGuild()
     {
-        //TODO
+        if (SaveSystem.Instance != null && SaveSystem.Instance.HasSaveFile)
+        {
+            bool loadSuccess = SaveSystem.Instance.LoadGame();
+            if (loadSuccess)
+            {
+                Debug.Log("Guild loaded from save file");
+                // Initialize systems after loading
+                Markets.Instance.InitialiseMarket();
+                MissionManager.Instance.InitaliseMissions();
+            }
+            else
+            {
+                Debug.LogWarning("Failed to load save file, starting new guild");
+                StartNewGuild();
+            }
+        }
+        else
+        {
+            Debug.Log("No save file found, starting new guild");
+            StartNewGuild();
+        }
+    }
+    
+    private void StartNewGuild()
+    {
+        guildName = "New Guild";
+        gold = 1000;
+        goldMil = 0;
+        AddStartingAdventurers();
+        AddStartingItems();
+        Markets.Instance.InitialiseMarket();
+        MissionManager.Instance.InitaliseMissions();
     }
 
     #region Setters
     public void SetGuildName(string newName)
     {
         guildName = newName;
+        TriggerAutoSave();
     }
     public void SetStartingGold(int startGold)
     {
         gold = startGold;
         goldMil = 0;
+    }
+    
+    public void SetGold(int newGold, int newGoldMil)
+    {
+        gold = newGold;
+        goldMil = newGoldMil;
+        UIManager.Instance?.SetGoldAmount(goldMil, gold);
     }
     #endregion
     #region Getters
@@ -191,6 +230,7 @@ public class Guild : MonoBehaviour
     {
         adventurers.Add(adventurer);
         adventurer.transform.SetParent(transform);
+        TriggerAutoSave();
     }
     public void RemoveAdventurer(Adventurer adventurer)
     {
@@ -222,6 +262,7 @@ public class Guild : MonoBehaviour
     {
         items.Add(item);
         item.transform.SetParent(transform);
+        TriggerAutoSave();
     }
     public void RemoveItemFromInventory(Item item)
     {
@@ -312,6 +353,22 @@ public class Guild : MonoBehaviour
         }
         
         // TODO: Trigger UI notification for mission completion rewards
+        TriggerAutoSave();
+    }
+    #endregion
+    
+    #region Save System Integration
+    private void TriggerAutoSave()
+    {
+        if (SaveSystem.Instance != null)
+        {
+            SaveSystem.Instance.SaveGame();
+        }
+    }
+    
+    public void ManualSave()
+    {
+        TriggerAutoSave();
     }
     #endregion
 }

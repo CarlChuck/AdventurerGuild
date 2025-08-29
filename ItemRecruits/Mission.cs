@@ -245,25 +245,15 @@ public class Mission : MonoBehaviour
     #region Getters
     public int GetStatBasedOnStartingValue(int valueToPass)
     {
-        int valueToExit = 1;
-        switch (valueToPass)
+        int valueToExit = valueToPass switch
         {
-            case 1:
-                valueToExit = Random.Range(1, 4);
-                break;
-            case 2:
-                valueToExit = Random.Range(2, 6);
-                break;
-            case 3:
-                valueToExit = Random.Range(3, 8);
-                break;
-            case 4:
-                valueToExit = Random.Range(4, 10);
-                break;
-            case 5:
-                valueToExit = Random.Range(5, 12);
-                break;
-        }
+            1 => Random.Range(1, 4),
+            2 => Random.Range(2, 6),
+            3 => Random.Range(3, 8),
+            4 => Random.Range(4, 10),
+            5 => Random.Range(5, 12),
+            _ => 1
+        };
         return valueToExit;
     }
     public string GetMissionName()
@@ -325,53 +315,57 @@ public class Mission : MonoBehaviour
     #region MissionProgression
     public void AssignAdventurer(Adventurer adventurerToAssign)
     {
-        if (missionState == MissionState.Available)
+        if (missionState != MissionState.Available)
         {
-            if (adventurerSlot1 == null)
-            {
-                adventurerSlot1 = adventurerToAssign;
-            }
-            else if (adventurerSlot2 == null)
-            {
-                adventurerSlot2 = adventurerToAssign;
-            }
-            else if (adventurerSlot3 == null)
-            {
-                adventurerSlot3 = adventurerToAssign;
-            }
-            else if (adventurerSlot4 == null)
-            {
-                adventurerSlot4 = adventurerToAssign;
-            }
-            
-            // Update the adventurers list to keep it in sync
-            UpdateAdventurersOnMissionList();
+            return;
         }
+
+        if (adventurerSlot1 == null)
+        {
+            adventurerSlot1 = adventurerToAssign;
+        }
+        else if (adventurerSlot2 == null)
+        {
+            adventurerSlot2 = adventurerToAssign;
+        }
+        else if (adventurerSlot3 == null)
+        {
+            adventurerSlot3 = adventurerToAssign;
+        }
+        else if (adventurerSlot4 == null)
+        {
+            adventurerSlot4 = adventurerToAssign;
+        }
+            
+        // Update the adventurers list to keep it in sync
+        UpdateAdventurersOnMissionList();
     }
     public void RemoveAdventurer(Adventurer adventurerToRemove)
     {
-        if (missionState == MissionState.Available)
+        if (missionState != MissionState.Available)
         {
-            if (adventurerSlot1 == adventurerToRemove)
-            {
-                adventurerSlot1 = null;
-            }
-            else if (adventurerSlot2 == adventurerToRemove)
-            {
-                adventurerSlot2 = null;
-            }
-            else if (adventurerSlot3 == adventurerToRemove)
-            {
-                adventurerSlot3 = null;
-            }
-            else if (adventurerSlot4 == adventurerToRemove)
-            {
-                adventurerSlot4 = null;
-            }
-            
-            // Update the adventurers list to keep it in sync
-            UpdateAdventurersOnMissionList();
+            return;
         }
+
+        if (adventurerSlot1 == adventurerToRemove)
+        {
+            adventurerSlot1 = null;
+        }
+        else if (adventurerSlot2 == adventurerToRemove)
+        {
+            adventurerSlot2 = null;
+        }
+        else if (adventurerSlot3 == adventurerToRemove)
+        {
+            adventurerSlot3 = null;
+        }
+        else if (adventurerSlot4 == adventurerToRemove)
+        {
+            adventurerSlot4 = null;
+        }
+            
+        // Update the adventurers list to keep it in sync
+        UpdateAdventurersOnMissionList();
     }
     public void BeginMission()
     {
@@ -380,6 +374,26 @@ public class Mission : MonoBehaviour
         hasStarted = true;
         // Update adventurers list from slots
         UpdateAdventurersOnMissionList();
+    }
+    
+    public void BeginMissionWithTimestamp(long startTimestamp)
+    {
+        missionState = MissionState.InProgress;
+        hasStarted = true;
+        
+        // Convert Unix timestamp back to Unity time
+        long currentTimestamp = System.DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        float elapsedRealTime = currentTimestamp - startTimestamp;
+        startTime = Time.time - elapsedRealTime;
+        
+        // Update adventurers list from slots
+        UpdateAdventurersOnMissionList();
+        
+        // Check if mission completed while game was closed
+        if (GetRemainingTime() <= 0f)
+        {
+            OnMissionEnd();
+        }
     }
     public void OnMissionEnd()
     {
@@ -390,8 +404,10 @@ public class Mission : MonoBehaviour
     public float GetRemainingTime()
     {
         if (!hasStarted || missionState != MissionState.InProgress)
+        {
             return 0f;
-            
+        }
+
         float elapsedTime = Time.time - startTime;
         float remainingTime = missionTime - elapsedTime;
         return Mathf.Max(0f, remainingTime);
@@ -405,17 +421,48 @@ public class Mission : MonoBehaviour
     public float GetElapsedTime()
     {
         if (!hasStarted)
+        {
             return 0f;
+        }
+
         return Time.time - startTime;
+    }
+    
+    public long GetStartTimestamp()
+    {
+        if (!hasStarted || missionState != MissionState.InProgress)
+        {
+            return 0;
+        }
+        
+        // Calculate actual start timestamp from current time and elapsed time
+        long currentTimestamp = System.DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        long actualStartTimestamp = currentTimestamp - (long)GetElapsedTime();
+        return actualStartTimestamp;
     }
     
     private void UpdateAdventurersOnMissionList()
     {
         adventurersOnMission.Clear();
-        if (adventurerSlot1 != null) adventurersOnMission.Add(adventurerSlot1);
-        if (adventurerSlot2 != null) adventurersOnMission.Add(adventurerSlot2);
-        if (adventurerSlot3 != null) adventurersOnMission.Add(adventurerSlot3);
-        if (adventurerSlot4 != null) adventurersOnMission.Add(adventurerSlot4);
+        if (adventurerSlot1 != null)
+        {
+            adventurersOnMission.Add(adventurerSlot1);
+        }
+
+        if (adventurerSlot2 != null)
+        {
+            adventurersOnMission.Add(adventurerSlot2);
+        }
+
+        if (adventurerSlot3 != null)
+        {
+            adventurersOnMission.Add(adventurerSlot3);
+        }
+
+        if (adventurerSlot4 != null)
+        {
+            adventurersOnMission.Add(adventurerSlot4);
+        }
     }
     
     public void CalculateTeamStats(out int teamCombat, out int teamHealing, out int teamSocial, out int teamSubterfuge, out int teamHunting, out int teamMagic, out int teamCraft)
@@ -430,16 +477,18 @@ public class Mission : MonoBehaviour
         
         foreach (Adventurer adventurer in adventurersOnMission)
         {
-            if (adventurer != null)
+            if (!adventurer)
             {
-                teamCombat += adventurer.GetCombat();
-                teamHealing += adventurer.GetHealing();
-                teamSocial += adventurer.GetSocial();
-                teamSubterfuge += adventurer.GetSubterfuge();
-                teamHunting += adventurer.GetHunting();
-                teamMagic += adventurer.GetMagic();
-                teamCraft += adventurer.GetCraft();
+                continue;
             }
+
+            teamCombat += adventurer.GetCombat();
+            teamHealing += adventurer.GetHealing();
+            teamSocial += adventurer.GetSocial();
+            teamSubterfuge += adventurer.GetSubterfuge();
+            teamHunting += adventurer.GetHunting();
+            teamMagic += adventurer.GetMagic();
+            teamCraft += adventurer.GetCraft();
         }
     }
     
@@ -499,16 +548,26 @@ public class Mission : MonoBehaviour
         // Determine success grade
         MissionGrade grade;
         if (finalSuccessRate >= 150f)
+        {
             grade = MissionGrade.CriticalSuccess;
+        }
         else if (finalSuccessRate >= 100f)
+        {
             grade = MissionGrade.Success;
+        }
         else if (finalSuccessRate >= 75f)
+        {
             grade = MissionGrade.PartialSuccess;
+        }
         else if (finalSuccessRate >= 50f)
+        {
             grade = MissionGrade.Failure;
+        }
         else
+        {
             grade = MissionGrade.CriticalFailure;
-        
+        }
+
         return new MissionResult
         {
             grade = grade,

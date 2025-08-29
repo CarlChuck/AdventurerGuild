@@ -317,7 +317,7 @@ public class UIManager : MonoBehaviour
         // Update availability status for all roster entries
         foreach (UIRosterEntry rosterEntry in rosterList)
         {
-            if (rosterEntry != null)
+            if (rosterEntry)
             {
                 rosterEntry.RefreshAvailabilityStatus();
             }
@@ -368,7 +368,7 @@ public class UIManager : MonoBehaviour
         {
             GameObject newMission = Instantiate(inProgressitemPrefab, inProgressContainer);
             UIMissionInProgress missionEntry = newMission.GetComponent<UIMissionInProgress>();
-            if (missionEntry != null)
+            if (missionEntry)
             {
                 inProgressMissionList.Add(missionEntry);
                 missionEntry.SetMission(mission);
@@ -407,7 +407,7 @@ public class UIManager : MonoBehaviour
         {
             GameObject newMission = Instantiate(completeditemPrefab, completedContainer);
             UIMissionCompleted missionEntry = newMission.GetComponent<UIMissionCompleted>();
-            if (missionEntry != null)
+            if (missionEntry)
             {
                 completedMissionList.Add(missionEntry);
                 missionEntry.SetMission(mission);
@@ -417,13 +417,14 @@ public class UIManager : MonoBehaviour
     
     private void ClearCompletedList()
     {
-        if (completedMissionList == null)
-            completedMissionList = new List<UIMissionCompleted>();
-            
+        completedMissionList ??= new List<UIMissionCompleted>();
+
         foreach (UIMissionCompleted child in completedMissionList)
         {
-            if (child != null && child.gameObject != null)
+            if (child && child.gameObject)
+            {
                 Destroy(child.gameObject);
+            }
         }
         completedMissionList.Clear();
     }
@@ -480,10 +481,10 @@ public class UIManager : MonoBehaviour
         Markets.Instance.OnBuyAdventurer(adventurer);
         OnButtonRecruit();
     }
-    public void PopulateRecruitList(List<Adventurer> ListOfadventurersIn)
+    public void PopulateRecruitList(List<Adventurer> ListOfAdventurersIn)
     {
         ClearRecruitList();
-        foreach (Adventurer adventurer in ListOfadventurersIn)
+        foreach (Adventurer adventurer in ListOfAdventurersIn)
         {
             GameObject newRecruit = Instantiate(marketRecruitPrefab, recruitContainer);
             UIMarketRecruitEntry rosterEntry = newRecruit.GetComponent<UIMarketRecruitEntry>();

@@ -69,13 +69,35 @@ public class UIMissionInProgress : MonoBehaviour
 
         if (missionReference)
         {
-            // Start a coroutine to update time and occasionally success rate.
-            _timerCoroutine = StartCoroutine(TimerAndPeriodicUpdate());
+            // Start coroutine only if GameObject is active, otherwise defer to OnEnable
+            if (gameObject.activeInHierarchy)
+            {
+                _timerCoroutine = StartCoroutine(TimerAndPeriodicUpdate());
+            }
         }
         else
         {
             // clear fields if null
             ClearDisplay();
+        }
+    }
+
+    private void OnEnable()
+    {
+        // Start coroutine if we have a mission but no running coroutine (deferred from SetMission)
+        if (missionReference && _timerCoroutine == null && missionReference.GetMissionState() == MissionState.InProgress)
+        {
+            _timerCoroutine = StartCoroutine(TimerAndPeriodicUpdate());
+        }
+    }
+
+    private void OnDisable()
+    {
+        // Stop coroutine when GameObject becomes inactive
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
         }
     }
 
@@ -124,7 +146,7 @@ public class UIMissionInProgress : MonoBehaviour
 
     private void UpdateDisplay(bool immediateSuccessRecalc = false)
     {
-        if (missionReference)
+        if (!missionReference)
         {
             ClearDisplay();
             return;
@@ -172,7 +194,7 @@ public class UIMissionInProgress : MonoBehaviour
             for (int i = 0, n = adventurers.Count; i < n; ++i)
             {
                 Adventurer adv = adventurers[i];
-                if (adv)
+                if (!adv)
                 {
                     continue;
                 }
@@ -194,8 +216,13 @@ public class UIMissionInProgress : MonoBehaviour
             }
         }
 
-        // Success probability (initial or forced)
-        if (!successProbability || !immediateSuccessRecalc)
+        // Success probability (initial or forced)  
+        if (!successProbability)
+        {
+            return;
+        }
+        
+        if (!immediateSuccessRecalc)
         {
             return;
         }

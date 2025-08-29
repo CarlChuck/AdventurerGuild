@@ -355,6 +355,22 @@ public class Adventurer : MonoBehaviour
     {
         return genderM;
     }
+    
+    // Alias methods for SaveSystem compatibility
+    public Item GetWeapon()
+    {
+        return GetWeaponSlot();
+    }
+    
+    public Item GetOutfit()
+    {
+        return GetOutfitSlot();
+    }
+    
+    public Item GetAccessory()
+    {
+        return GetAccessorySlot();
+    }
     #endregion
     #region Equipment
     public void EquipWeapon(Item item)
@@ -367,8 +383,8 @@ public class Adventurer : MonoBehaviour
             }
             Guild.Instance.RemoveItemFromInventory(item);
             weaponSlot = item;
+            item.SetEquipped(true, adventurerName);
         }
-
     }
     public void EquipOutfit(Item item)
     {
@@ -380,6 +396,7 @@ public class Adventurer : MonoBehaviour
             }
             Guild.Instance.RemoveItemFromInventory(item);
             outfitSlot = item;
+            item.SetEquipped(true, adventurerName);
         }
     }
     public void EquipAccessory(Item item)
@@ -392,12 +409,14 @@ public class Adventurer : MonoBehaviour
             }
             Guild.Instance.RemoveItemFromInventory(item);
             accessorySlot = item;
+            item.SetEquipped(true, adventurerName);
         }
     }
     public void UnEquipWeapon()
     {
         if (weaponSlot != null)
         {
+            weaponSlot.SetEquipped(false);
             Guild.Instance.AddItemToInventory(weaponSlot);
             weaponSlot = null;
         }
@@ -406,6 +425,7 @@ public class Adventurer : MonoBehaviour
     {
         if (outfitSlot != null)
         {
+            outfitSlot.SetEquipped(false);
             Guild.Instance.AddItemToInventory(outfitSlot);
             outfitSlot = null;
         }
@@ -414,6 +434,7 @@ public class Adventurer : MonoBehaviour
     {
         if (accessorySlot != null)
         {
+            accessorySlot.SetEquipped(false);
             Guild.Instance.AddItemToInventory(accessorySlot);
             accessorySlot = null;
         }

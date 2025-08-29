@@ -163,13 +163,13 @@ public class MissionManager : MonoBehaviour
         completedMissionList.Add(mission);
         
         // Update Transform hierarchy
-        if (mission.transform != null && CompleteList != null)
+        if (mission.transform && CompleteList)
         {
             mission.transform.SetParent(CompleteList);
         }
         
         // Trigger UI update for mission completion
-        if (UIManager.Instance != null)
+        if (UIManager.Instance)
         {
             UIManager.Instance.RefreshMissionLists();
         }
@@ -206,7 +206,7 @@ public class MissionManager : MonoBehaviour
     {
         foreach (Mission mission in completedMissionList)
         {
-            if (mission != null && mission.gameObject != null)
+            if (mission && mission.gameObject)
             {
                 Destroy(mission.gameObject);
             }

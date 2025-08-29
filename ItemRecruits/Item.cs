@@ -16,6 +16,8 @@ public class Item : MonoBehaviour
     private Stat magic;
     private Stat craft;
     private int goldValue;
+    private bool isEquipped = false;
+    private string equippedByAdventurerName = "";
 
 
     public void SetItem(ItemSO item)
@@ -240,6 +242,34 @@ public class Item : MonoBehaviour
     public Quality GetItemQuality()
     {
         return itemQuality;
+    }
+    
+    // Alias methods for SaveSystem compatibility
+    public Quality GetQuality()
+    {
+        return GetItemQuality();
+    }
+    
+    public int GetValue()
+    {
+        return GetGoldValue();
+    }
+    
+    // Equipment tracking methods
+    public bool IsEquipped()
+    {
+        return isEquipped;
+    }
+    
+    public string GetEquippedByAdventurer()
+    {
+        return equippedByAdventurerName;
+    }
+    
+    public void SetEquipped(bool equipped, string adventurerName = "")
+    {
+        isEquipped = equipped;
+        equippedByAdventurerName = equipped ? adventurerName : "";
     }
 }
 public enum ItemType { Weapon, Outfit, Accessory}
