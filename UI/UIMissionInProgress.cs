@@ -127,7 +127,7 @@ public class UIMissionInProgress : MonoBehaviour
                     if (!Mathf.Approximately(result.successRate, _lastSuccessRate))
                     {
                         _lastSuccessRate = result.successRate;
-                        successProbability.SetText("{0:F1}%", result.successRate);
+                        successProbability.SetText("{0:1}%", result.successRate);
                     }
                 }
             }
@@ -229,7 +229,7 @@ public class UIMissionInProgress : MonoBehaviour
 
         MissionResult result = missionReference.CalculateMissionSuccess();
         _lastSuccessRate = result.successRate;
-        successProbability.SetText("{0:F1}%", result.successRate);
+        successProbability.SetText("{0:1}%", result.successRate);
     }
 
     private void ClearDisplay()

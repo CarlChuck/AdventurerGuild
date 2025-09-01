@@ -271,6 +271,18 @@ public class Item : MonoBehaviour
         isEquipped = equipped;
         equippedByAdventurerName = equipped ? adventurerName : "";
     }
+    
+    #region Save System Methods
+    
+    public void SetCombat(int value) { combat?.SetValue(value); }
+    public void SetHealing(int value) { healing?.SetValue(value); }
+    public void SetSocial(int value) { social?.SetValue(value); }
+    public void SetSubterfuge(int value) { subterfuge?.SetValue(value); }
+    public void SetHunting(int value) { hunting?.SetValue(value); }
+    public void SetMagic(int value) { magic?.SetValue(value); }
+    public void SetCraft(int value) { craft?.SetValue(value); }
+    
+    #endregion
 }
 public enum ItemType { Weapon, Outfit, Accessory}
 public enum Quality { Common, Uncommon, Masterwork, Rare, Legendary}

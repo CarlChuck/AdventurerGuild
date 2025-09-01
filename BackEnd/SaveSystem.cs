@@ -102,6 +102,12 @@ public class SaveSystem : MonoBehaviour
             // Apply save data to game
             ApplyGameData(saveData);
             
+            // Refresh UI after loading
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.RefreshMissionLists();
+            }
+            
             Debug.Log("Game loaded successfully");
             return true;
         }
@@ -355,6 +361,7 @@ public class SaveSystem : MonoBehaviour
         ApplyGuildData(saveData.guildData);
         ApplyAdventurerData(saveData.adventurers);
         ApplyItemData(saveData.items);
+        RestoreEquipmentAssignments(saveData.adventurers);
         ApplyMissionData(saveData.missions);
         ApplyMarketData(saveData.market);
     }
@@ -369,25 +376,118 @@ public class SaveSystem : MonoBehaviour
     
     private void ApplyAdventurerData(List<AdventurerSaveData> data)
     {
-        // TODO: Implement adventurer reconstruction from save data
-        // This will require working with CharGen to recreate adventurers
+        if (data == null || Guild.Instance == null || CharGen.Instance == null) return;
+        
+        Guild.Instance.ClearAdventurers();
+        
+        foreach (AdventurerSaveData adventurerData in data)
+        {
+            if (adventurerData == null) continue;
+            
+            Adventurer recreatedAdventurer = CharGen.Instance.RecreateAdventurer(adventurerData, Guild.Instance.transform);
+            if (recreatedAdventurer != null)
+            {
+                Guild.Instance.AddAdventurer(recreatedAdventurer);
+            }
+        }
     }
     
     private void ApplyItemData(List<ItemSaveData> data)
     {
-        // TODO: Implement item reconstruction from save data
-        // This will require working with ItemGen to recreate items
+        if (data == null || Guild.Instance == null || ItemGen.Instance == null) return;
+        
+        Guild.Instance.ClearItems();
+        
+        foreach (ItemSaveData itemData in data)
+        {
+            if (itemData == null) continue;
+            
+            Item recreatedItem = ItemGen.Instance.RecreateItem(itemData, Guild.Instance.transform);
+            if (recreatedItem != null)
+            {
+                Guild.Instance.AddItemToInventory(recreatedItem);
+            }
+        }
     }
     
     private void ApplyMissionData(MissionSaveData data)
     {
-        // TODO: Implement mission reconstruction from save data
-        // This will require working with MissionManager and MissionGen
+        if (data == null || MissionManager.Instance == null) return;
+        
+        MissionManager.Instance.RestoreMissionLists(data);
     }
     
     private void ApplyMarketData(MarketSaveData data)
     {
         // TODO: Implement when Markets system is expanded
+    }
+    
+    private void RestoreEquipmentAssignments(List<AdventurerSaveData> adventurerData)
+    {
+        if (adventurerData == null || Guild.Instance == null) return;
+        
+        foreach (AdventurerSaveData adventurerSave in adventurerData)
+        {
+            if (adventurerSave?.equipment == null) continue;
+            
+            Adventurer adventurer = FindAdventurerByName(adventurerSave.name);
+            if (adventurer == null) continue;
+            
+            if (!string.IsNullOrEmpty(adventurerSave.equipment.weaponId))
+            {
+                Item weapon = FindItemById(adventurerSave.equipment.weaponId);
+                if (weapon != null && weapon.GetItemType() == ItemType.Weapon)
+                {
+                    adventurer.EquipWeapon(weapon);
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(adventurerSave.equipment.outfitId))
+            {
+                Item outfit = FindItemById(adventurerSave.equipment.outfitId);
+                if (outfit != null && outfit.GetItemType() == ItemType.Outfit)
+                {
+                    adventurer.EquipOutfit(outfit);
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(adventurerSave.equipment.accessoryId))
+            {
+                Item accessory = FindItemById(adventurerSave.equipment.accessoryId);
+                if (accessory != null && accessory.GetItemType() == ItemType.Accessory)
+                {
+                    adventurer.EquipAccessory(accessory);
+                }
+            }
+        }
+    }
+    
+    private Adventurer FindAdventurerByName(string name)
+    {
+        if (string.IsNullOrEmpty(name) || Guild.Instance == null) return null;
+        
+        foreach (Adventurer adventurer in Guild.Instance.GetAdventurers())
+        {
+            if (adventurer != null && adventurer.GetName() == name)
+                return adventurer;
+        }
+        return null;
+    }
+    
+    private Item FindItemById(string id)
+    {
+        if (string.IsNullOrEmpty(id) || Guild.Instance == null) return null;
+        
+        foreach (Item item in Guild.Instance.GetItems())
+        {
+            if (item != null)
+            {
+                UniqueId uniqueId = item.GetComponent<UniqueId>();
+                if (uniqueId != null && uniqueId.Id == id)
+                    return item;
+            }
+        }
+        return null;
     }
     
     #endregion

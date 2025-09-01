@@ -219,4 +219,52 @@ public class MissionManager : MonoBehaviour
             UIManager.Instance.RefreshMissionLists();
         }
     }
+    
+    #region Save System Integration
+    
+    public void ClearAllMissions()
+    {
+        foreach (Mission mission in taskList)
+        {
+            if (mission != null && mission.gameObject != null)
+                Destroy(mission.gameObject);
+        }
+        taskList.Clear();
+        
+        foreach (Mission mission in actionList)
+        {
+            if (mission != null && mission.gameObject != null)
+                Destroy(mission.gameObject);
+        }
+        actionList.Clear();
+        
+        foreach (Mission mission in activeTaskList)
+        {
+            if (mission != null && mission.gameObject != null)
+                Destroy(mission.gameObject);
+        }
+        activeTaskList.Clear();
+        
+        foreach (Mission mission in completedMissionList)
+        {
+            if (mission != null && mission.gameObject != null)
+                Destroy(mission.gameObject);
+        }
+        completedMissionList.Clear();
+    }
+    
+    public void RestoreMissionLists(MissionSaveData missionData)
+    {
+        if (missionData == null) return;
+        
+        ClearAllMissions();
+        
+        // Note: For now, we'll repopulate with new missions instead of exact reconstruction
+        // This is because mission templates might not have enough data saved for exact recreation
+        // Future enhancement: Save template references and parameters for exact reconstruction
+        
+        PopulateTaskList();
+    }
+    
+    #endregion
 }

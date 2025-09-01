@@ -440,5 +440,21 @@ public class Adventurer : MonoBehaviour
         }
     }
     #endregion
+    
+    #region Save System Methods
+    
+    public void SetCombat(int value) { combat?.SetValue(value); }
+    public void SetHealing(int value) { healing?.SetValue(value); }
+    public void SetSocial(int value) { social?.SetValue(value); }
+    public void SetSubterfuge(int value) { subterfuge?.SetValue(value); }
+    public void SetHunting(int value) { hunting?.SetValue(value); }
+    public void SetMagic(int value) { magic?.SetValue(value); }
+    public void SetCraft(int value) { craft?.SetValue(value); }
+    
+    public void SetLevel(int newLevel) { level = newLevel; }
+    public void SetExperience(int newExperience) { experience = newExperience; }
+    public void SetAdventurerName(string newName) { adventurerName = newName; }
+    
+    #endregion
 }
 public enum IfCrafter { NA, Weaponsmith, Armoursmith, Leatherworker, Tailor, Fletcher, Jeweller, Carpenter }
