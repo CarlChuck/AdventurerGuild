@@ -55,7 +55,7 @@ public class MissionManager : MonoBehaviour
     {
         while (missionSystemActive)
         {
-            yield return new WaitForSeconds(30f); // Check missions every 30 seconds
+            yield return new WaitForSeconds(5f); // Check missions every 5 seconds
             CheckActiveMissions();
         }
     }
@@ -170,6 +170,29 @@ public class MissionManager : MonoBehaviour
         
         // Trigger UI update for mission completion
         if (UIManager.Instance)
+        {
+            UIManager.Instance.RefreshMissionLists();
+        }
+    }
+    
+    public void FinalizeMission(Mission mission)
+    {
+        if (mission == null || !completedMissionList.Contains(mission))
+        {
+            return;
+        }
+        
+        // Remove mission from completed list
+        completedMissionList.Remove(mission);
+        
+        // Clean up the mission GameObject
+        if (mission.gameObject != null)
+        {
+            Destroy(mission.gameObject);
+        }
+        
+        // Trigger UI refresh to update mission lists
+        if (UIManager.Instance != null)
         {
             UIManager.Instance.RefreshMissionLists();
         }

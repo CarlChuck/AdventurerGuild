@@ -659,6 +659,20 @@ public class Mission : MonoBehaviour
         return Quality.Common;
     }
     #endregion
+
+    public void CompleteMission()
+    {
+        if (missionState != MissionState.Completed)
+        {
+            Debug.LogWarning($"Cannot complete mission '{missionName}' - mission is not in Completed state (current state: {missionState})");
+            return;
+        }
+        
+        if (MissionManager.Instance != null)
+        {
+            MissionManager.Instance.FinalizeMission(this);
+        }
+    }
 }
 public enum MissionType
 {

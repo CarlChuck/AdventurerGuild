@@ -11,6 +11,7 @@ public class UIMissionCompleted : MonoBehaviour
     [SerializeField] private TextMeshProUGUI missionResult;
     [SerializeField] private TextMeshProUGUI participantAdventurers;
     [SerializeField] private TextMeshProUGUI rewardsReceived;
+    [SerializeField] private UIMissionReward missionRewardUI;
     
     private Mission missionReference;
     
@@ -22,49 +23,81 @@ public class UIMissionCompleted : MonoBehaviour
     
     private void UpdateDisplay()
     {
-        if (missionReference == null) return;
-        
-        if (missionName != null)
+        if (!missionReference)
+        {
+            return;
+        }
+
+        if (missionName)
+        {
             missionName.text = missionReference.GetMissionName();
-        if (missionLevel != null)
+        }
+
+        if (missionLevel)
+        {
             missionLevel.text = "Level " + missionReference.GetMissionLevel().ToString();
-            
+        }
+
         // Calculate results for display
         MissionResult result = missionReference.CalculateMissionSuccess();
         MissionRewards rewards = missionReference.CalculateRewards(result);
         
-        if (missionResult != null)
+        if (missionResult)
         {
             missionResult.text = $"Result: {result.grade}\nSuccess Rate: {result.successRate:F1}%";
         }
         
-        if (participantAdventurers != null)
+        if (participantAdventurers)
         {
             List<Adventurer> adventurers = missionReference.GetAdventurersOnMission();
             string adventurerNames = "";
             foreach (Adventurer adv in adventurers)
             {
-                if (adv != null)
+                if (!adv)
                 {
-                    if (adventurerNames.Length > 0) adventurerNames += ", ";
-                    adventurerNames += adv.GetName();
+                    continue;
                 }
+
+                if (adventurerNames.Length > 0)
+                {
+                    adventurerNames += ", ";
+                }
+
+                adventurerNames += adv.GetName();
             }
             participantAdventurers.text = "Participants: " + adventurerNames;
         }
-        
-        if (rewardsReceived != null)
+
+        if (!rewardsReceived)
         {
-            string rewardText = $"Gold: {rewards.gold}";
-            if (rewards.experiencePerAdventurer > 0)
-            {
-                rewardText += $"\nXP per Adventurer: {rewards.experiencePerAdventurer}";
-            }
-            if (rewards.items != null && rewards.items.Count > 0)
-            {
-                rewardText += $"\nItems: {rewards.items.Count}";
-            }
-            rewardsReceived.text = rewardText;
+            return;
+        }
+
+        string rewardText = $"Gold: {rewards.gold}";
+        if (rewards.experiencePerAdventurer > 0)
+        {
+            rewardText += $"\nXP per Adventurer: {rewards.experiencePerAdventurer}";
+        }
+        if (rewards.items is { Count: > 0 })
+        {
+            rewardText += $"\nItems: {rewards.items.Count}";
+        }
+        rewardsReceived.text = rewardText;
+    }
+
+    public void OnCompleteButton()
+    {
+        if (missionRewardUI != null)
+        {
+            missionRewardUI.gameObject.SetActive(true);
+        }
+    }
+
+    public void OnAcceptRewardButton()
+    {
+        if (missionReference != null)
+        {
+            missionReference.CompleteMission();
         }
     }
 }
