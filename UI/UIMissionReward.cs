@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class UIMissionReward : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Mission missionReference;
+
+    public void ShowRewards(Mission mission)
     {
-        
+        missionReference = mission;
+        DisplayMissionOutcomes();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void DisplayMissionOutcomes()
     {
-        
+        //TODO: Implement UI display for mission outcomes
+    }
+
+    public void OnButtonClaimReward()
+    {
+        UIManager.Instance.OnButtonClaimReward(missionReference);
     }
 }

@@ -11,7 +11,6 @@ public class UIMissionCompleted : MonoBehaviour
     [SerializeField] private TextMeshProUGUI missionResult;
     [SerializeField] private TextMeshProUGUI participantAdventurers;
     [SerializeField] private TextMeshProUGUI rewardsReceived;
-    [SerializeField] private UIMissionReward missionRewardUI;
     
     private Mission missionReference;
     
@@ -87,10 +86,7 @@ public class UIMissionCompleted : MonoBehaviour
 
     public void OnCompleteButton()
     {
-        if (missionRewardUI != null)
-        {
-            missionRewardUI.gameObject.SetActive(true);
-        }
+        UIManager.Instance.OnButtonClaimReward(missionReference);
     }
 
     public void OnAcceptRewardButton()

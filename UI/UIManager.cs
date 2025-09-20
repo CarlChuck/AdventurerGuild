@@ -341,15 +341,7 @@ public class UIManager : MonoBehaviour
         }
     }
     #endregion
-    
-    /*
-    #region Actions
-    [Header("Actions")]
-    [SerializeField] private Transform actionContainer;
-    [SerializeField] private GameObject actionitemPrefab;
-    #endregion
-    */
-    
+        
     #region InProgress
     [Header("In Progress")]
     [SerializeField] private Transform inProgressContainer;
@@ -394,7 +386,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform completedContainer;
     [SerializeField] private GameObject completeditemPrefab;
     [SerializeField] private List<UIMissionCompleted> completedMissionList;
-    
+    [SerializeField] private UIMissionReward missionRewardUI;
+
     public void OnButtonCompleted()
     {
         PopulateCompletedList(MissionManager.Instance.GetCompletedList());
@@ -427,6 +420,24 @@ public class UIManager : MonoBehaviour
             }
         }
         completedMissionList.Clear();
+    }
+
+    public void OnButtonClaimReward(Mission mission)
+    {        
+        missionRewardUI.ShowRewards(mission);
+        SetMissionRewardPaneActive();
+    }
+    public void OnButtonRewardClaimed(Mission mission)
+    {
+
+        SetMissionRewardPaneActive(false);
+    }
+    private void SetMissionRewardPaneActive(bool isActive = true) 
+    { 
+        if (missionRewardUI)
+        {
+            missionRewardUI.gameObject.SetActive(isActive);
+        }
     }
     #endregion
     #region Market
